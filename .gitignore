@@ -1,0 +1,8 @@
+.env
+.env.*
+secrets/
+private/
+customer-data/
+*.key
+*.pem
+*.json
