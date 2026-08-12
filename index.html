@@ -2,18 +2,769 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Organic Snacks Store</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <link rel="stylesheet" href="style.css">
+  <meta
+    name="description"
+    content="Fresh organic-style snacks including tomato ketchup, laddu and cookies made with selected ingredients."
+  >
+
+  <title>
+    Organic Snacks Store
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
+
 <body>
 
-  <h1>Organic Snacks Store</h1>
+  <header class="site-header">
 
-  <p>Website coming soon.</p>
+    <nav class="navbar">
+
+      <a
+        class="brand"
+        href="#home"
+      >
+        <span class="brand-icon">🌿</span>
+        <span>Organic Snacks</span>
+      </a>
+
+      <button
+        class="menu-button"
+        id="menu-button"
+        type="button"
+        aria-label="Open navigation menu"
+      >
+        ☰
+      </button>
+
+      <div
+        class="nav-links"
+        id="nav-links"
+      >
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#organic-info">Organic Information</a>
+        <a href="#videos">Videos</a>
+        <a href="#articles">Articles</a>
+        <a href="#special-orders">Special Orders</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+    </nav>
+
+  </header>
+
+
+  <main>
+
+    <section
+      class="hero-section"
+      id="home"
+    >
+      <div class="hero-content">
+
+        <p class="eyebrow">
+          SMALL-BATCH ORGANIC-STYLE SNACKS
+        </p>
+
+        <h1>
+          Simple ingredients.
+          <br>
+          Honest snacks.
+        </h1>
+
+        <p class="hero-text">
+          Discover tomato ketchup, traditional laddu and delicious cookies
+          prepared with clearly displayed ingredients and preparation details.
+        </p>
+
+        <div class="hero-buttons">
+          <a
+            class="primary-button"
+            href="#products"
+          >
+            Shop Products
+          </a>
+
+          <a
+            class="secondary-button"
+            href="#organic-info"
+          >
+            Learn More
+          </a>
+        </div>
+
+      </div>
+
+      <div class="hero-image-wrapper">
+        <img
+          class="hero-image"
+          src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=900&q=85"
+          alt="Fresh organic ingredients"
+        >
+      </div>
+    </section>
+
+
+    <section class="trust-section">
+
+      <div class="trust-item">
+        <span class="trust-icon">🌾</span>
+        <h3>Clear Ingredients</h3>
+        <p>
+          Product ingredients are displayed clearly.
+        </p>
+      </div>
+
+      <div class="trust-item">
+        <span class="trust-icon">🧈</span>
+        <h3>Ghee and Butter Options</h3>
+        <p>
+          See whether products use ghee, butter or oil.
+        </p>
+      </div>
+
+      <div class="trust-item">
+        <span class="trust-icon">📦</span>
+        <h3>Visible Availability</h3>
+        <p>
+          Product availability is connected to current stock.
+        </p>
+      </div>
+
+      <div class="trust-item">
+        <span class="trust-icon">🍪</span>
+        <h3>Small-Batch Focus</h3>
+        <p>
+          Discover products prepared in selected batches.
+        </p>
+      </div>
+
+    </section>
+
+
+    <section
+      class="page-section"
+      id="products"
+    >
+
+      <div class="section-heading">
+        <p class="eyebrow">
+          OUR PRODUCTS
+        </p>
+
+        <h2>
+          Fresh snacks for every occasion
+        </h2>
+
+        <p>
+          Browse our current products. Prices and availability are loaded
+          from our latest store inventory.
+        </p>
+      </div>
+
+      <div class="product-toolbar">
+
+        <label
+          class="search-label"
+          for="product-search"
+        >
+          Search products
+        </label>
+
+        <input
+          id="product-search"
+          class="search-input"
+          type="search"
+          placeholder="Search ketchup, laddu, cookies..."
+        >
+
+        <label
+          class="filter-label"
+          for="category-filter"
+        >
+          Category
+        </label>
+
+        <select
+          id="category-filter"
+          class="category-filter"
+        >
+          <option value="all">All Categories</option>
+          <option value="ketchup">Ketchup</option>
+          <option value="laddu">Laddu</option>
+          <option value="cookies">Cookies</option>
+          <option value="snacks">Snacks</option>
+        </select>
+
+      </div>
+
+      <p
+        id="product-message"
+        class="product-message"
+        aria-live="polite"
+      >
+        Loading products...
+      </p>
+
+      <div
+        id="product-container"
+        class="product-grid"
+      >
+      </div>
+
+    </section>
+
+
+    <section
+      class="page-section information-section"
+      id="organic-info"
+    >
+
+      <div class="section-heading">
+        <p class="eyebrow">
+          ORGANIC INFORMATION
+        </p>
+
+        <h2>
+          Know what goes into your food
+        </h2>
+
+        <p>
+          We believe customers should have access to useful information about
+          ingredients, preparation methods and storage.
+        </p>
+      </div>
+
+      <div class="information-grid">
+
+        <article class="information-card">
+          <span class="information-icon">🌱</span>
+
+          <h3>
+            Ingredient Transparency
+          </h3>
+
+          <p>
+            Product pages show the ingredients used, product weight and
+            preparation information.
+          </p>
+        </article>
+
+        <article class="information-card">
+          <span class="information-icon">🫙</span>
+
+          <h3>
+            Oil, Ghee and Butter
+          </h3>
+
+          <p>
+            Product information explains whether the product uses no oil,
+            desi ghee, white butter or cold-pressed oil.
+          </p>
+        </article>
+
+        <article class="information-card">
+          <span class="information-icon">📚</span>
+
+          <h3>
+            Educational Articles
+          </h3>
+
+          <p>
+            Read about ingredient sourcing, storage, preparation and food
+            labels.
+          </p>
+        </article>
+
+        <article class="information-card">
+          <span class="information-icon">🔎</span>
+
+          <h3>
+            Honest Comparisons
+          </h3>
+
+          <p>
+            Learn how to compare products using ingredients, labels,
+            preparation methods and available information.
+          </p>
+        </article>
+
+      </div>
+
+      <div class="important-note">
+        <strong>Important:</strong>
+        Organic and health-related claims should be supported by proper
+        documentation. Product information is for general education and
+        should not be treated as medical advice.
+      </div>
+
+    </section>
+
+
+    <section
+      class="page-section preparation-section"
+    >
+
+      <div class="preparation-content">
+
+        <p class="eyebrow">
+          OUR APPROACH
+        </p>
+
+        <h2>
+          Prepared with care and clear information
+        </h2>
+
+        <p>
+          We focus on simple product information, careful preparation and
+          clear communication. Customers can check product ingredients,
+          storage instructions, shelf life and availability before ordering.
+        </p>
+
+        <a
+          class="primary-button"
+          href="#contact"
+        >
+          Contact Us
+        </a>
+
+      </div>
+
+      <div class="preparation-list">
+
+        <div class="preparation-item">
+          <span>01</span>
+          <p>
+            Select ingredients and document product information.
+          </p>
+        </div>
+
+        <div class="preparation-item">
+          <span>02</span>
+          <p>
+            Prepare products according to the product description.
+          </p>
+        </div>
+
+        <div class="preparation-item">
+          <span>03</span>
+          <p>
+            Pack products with storage and shelf-life details.
+          </p>
+        </div>
+
+        <div class="preparation-item">
+          <span>04</span>
+          <p>
+            Update availability when stock changes.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      class="page-section"
+      id="videos"
+    >
+
+      <div class="section-heading">
+        <p class="eyebrow">
+          VIDEOS
+        </p>
+
+        <h2>
+          Learn through our videos
+        </h2>
+
+        <p>
+          Product preparation and educational videos will be added here.
+        </p>
+      </div>
+
+      <div class="content-placeholder">
+
+        <span class="placeholder-icon">▶</span>
+
+        <h3>
+          Videos coming soon
+        </h3>
+
+        <p>
+          Add your YouTube video links in the Videos sheet. They will be
+          displayed here in a future update.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <section
+      class="page-section"
+      id="articles"
+    >
+
+      <div class="section-heading">
+        <p class="eyebrow">
+          ARTICLES
+        </p>
+
+        <h2>
+          Organic snacks knowledge center
+        </h2>
+
+        <p>
+          Read useful articles about ingredients, labels, storage and
+          preparation.
+        </p>
+      </div>
+
+      <div class="article-grid">
+
+        <article class="article-card">
+          <span class="article-number">01</span>
+
+          <h3>
+            What does organic food mean?
+          </h3>
+
+          <p>
+            Learn the basic meaning of organic food and why certification
+            and documentation are important.
+          </p>
+
+          <a href="#contact">
+            Read more →
+          </a>
+        </article>
+
+        <article class="article-card">
+          <span class="article-number">02</span>
+
+          <h3>
+            Cold-pressed oil and refined oil
+          </h3>
+
+          <p>
+            Understand the difference between different oil processing
+            methods and read product labels carefully.
+          </p>
+
+          <a href="#contact">
+            Read more →
+          </a>
+        </article>
+
+        <article class="article-card">
+          <span class="article-number">03</span>
+
+          <h3>
+            How to store snacks
+          </h3>
+
+          <p>
+            Follow product-specific storage instructions to help maintain
+            freshness and quality.
+          </p>
+
+          <a href="#contact">
+            Read more →
+          </a>
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <section
+      class="page-section special-order-section"
+      id="special-orders"
+    >
+
+      <div class="special-order-content">
+
+        <p class="eyebrow">
+          SPECIAL ORDERS
+        </p>
+
+        <h2>
+          Need a larger or freshly prepared batch?
+        </h2>
+
+        <p>
+          Some products may require advance preparation. Contact us with your
+          required quantity, preferred delivery date and product choice.
+        </p>
+
+        <a
+          class="primary-button"
+          href="#contact"
+        >
+          Request Special Order
+        </a>
+
+      </div>
+
+      <div class="special-order-box">
+
+        <div class="special-order-row">
+          <strong>Suitable for:</strong>
+          <span>Events, festivals and gifts</span>
+        </div>
+
+        <div class="special-order-row">
+          <strong>Products:</strong>
+          <span>Laddu, cookies and snack boxes</span>
+        </div>
+
+        <div class="special-order-row">
+          <strong>Notice:</strong>
+          <span>Preparation time may apply</span>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      class="page-section"
+      id="contact"
+    >
+
+      <div class="section-heading">
+        <p class="eyebrow">
+          CONTACT US
+        </p>
+
+        <h2>
+          We would love to hear from you
+        </h2>
+
+        <p>
+          Replace the sample details below with your actual business
+          information.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+
+        <div class="contact-card">
+          <span class="contact-icon">📞</span>
+
+          <h3>
+            Phone
+          </h3>
+
+          <p>
+            <a href="tel:+919876543210">
+              +91 98765 43210
+            </a>
+          </p>
+        </div>
+
+        <div class="contact-card">
+          <span class="contact-icon">✉️</span>
+
+          <h3>
+            Email
+          </h3>
+
+          <p>
+            <a href="mailto:your@email.com">
+              your@email.com
+            </a>
+          </p>
+        </div>
+
+        <div class="contact-card">
+          <span class="contact-icon">💬</span>
+
+          <h3>
+            WhatsApp
+          </h3>
+
+          <p>
+            <a
+              href="https://wa.me/919876543210"
+              target="_blank"
+              rel="noopener"
+            >
+              Chat with us
+            </a>
+          </p>
+        </div>
+
+        <div class="contact-card">
+          <span class="contact-icon">📍</span>
+
+          <h3>
+            Address
+          </h3>
+
+          <p>
+            Your business address
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer class="site-footer">
+
+    <div class="footer-content">
+
+      <div class="footer-brand">
+        <h2>
+          🌿 Organic Snacks
+        </h2>
+
+        <p>
+          Simple snacks with clear information.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h3>
+          Quick Links
+        </h3>
+
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#organic-info">Organic Information</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <div class="footer-links">
+        <h3>
+          Information
+        </h3>
+
+        <a href="#articles">Articles</a>
+        <a href="#videos">Videos</a>
+        <a href="#special-orders">Special Orders</a>
+        <a href="#contact">Reviews</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>
+        © 2025 Organic Snacks Store. All rights reserved.
+      </p>
+
+      <p>
+        Replace this footer with your real business information.
+      </p>
+    </div>
+
+  </footer>
+
 
   <script src="script.js"></script>
+
+  <script>
+    const menuButton =
+      document.getElementById("menu-button");
+
+    const navLinks =
+      document.getElementById("nav-links");
+
+    if (menuButton && navLinks) {
+      menuButton.addEventListener("click", function() {
+        navLinks.classList.toggle("nav-open");
+      });
+
+      navLinks.querySelectorAll("a").forEach(function(link) {
+        link.addEventListener("click", function() {
+          navLinks.classList.remove("nav-open");
+        });
+      });
+    }
+
+    const productSearch =
+      document.getElementById("product-search");
+
+    const categoryFilter =
+      document.getElementById("category-filter");
+
+    if (productSearch) {
+      productSearch.addEventListener("input", function() {
+        filterProductCards();
+      });
+    }
+
+    if (categoryFilter) {
+      categoryFilter.addEventListener("change", function() {
+        filterProductCards();
+      });
+    }
+
+    function filterProductCards() {
+      const searchValue =
+        productSearch.value.toLowerCase().trim();
+
+      const categoryValue =
+        categoryFilter.value.toLowerCase();
+
+      const cards =
+        document.querySelectorAll(".product-card");
+
+      let visibleCount = 0;
+
+      cards.forEach(function(card) {
+        const cardText =
+          card.textContent.toLowerCase();
+
+        const cardCategory =
+          card.getAttribute("data-category") || "";
+
+        const matchesSearch =
+          cardText.includes(searchValue);
+
+        const matchesCategory =
+          categoryValue === "all" ||
+          cardCategory.includes(categoryValue);
+
+        if (matchesSearch && matchesCategory) {
+          card.style.display = "";
+          visibleCount++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      const message =
+        document.getElementById("product-message");
+
+      if (
+        message &&
+        cards.length > 0 &&
+        visibleCount === 0
+      ) {
+        message.textContent =
+          "No matching products found.";
+      }
+    }
+  </script>
+
 </body>
 </html>
