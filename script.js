@@ -1,9 +1,15 @@
 /*
   ORGANIC SNACKS STORE
-  Product display and filtering script
+  Product display using JSONP
 
-  This file connects the GitHub website to:
-  Google Apps Script → Google Sheets
+  Website:
+  GitHub Pages
+
+  Backend:
+  Google Apps Script
+
+  Database:
+  Google Sheets
 */
 
 
@@ -16,7 +22,7 @@ const API_URL =
 
 
 /* ==================================================
-   2. PAGE ELEMENTS
+   2. PAGE VARIABLES
 ================================================== */
 
 let productContainer;
@@ -29,23 +35,34 @@ let categoryFilter;
    3. START WEBSITE
 ================================================== */
 
-document.addEventListener("DOMContentLoaded", function() {
-  productContainer =
-    document.getElementById("product-container");
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+    productContainer =
+      document.getElementById(
+        "product-container"
+      );
 
-  productMessage =
-    document.getElementById("product-message");
+    productMessage =
+      document.getElementById(
+        "product-message"
+      );
 
-  productSearch =
-    document.getElementById("product-search");
+    productSearch =
+      document.getElementById(
+        "product-search"
+      );
 
-  categoryFilter =
-    document.getElementById("category-filter");
+    categoryFilter =
+      document.getElementById(
+        "category-filter"
+      );
 
-  setupMenu();
-  setupProductFilters();
-  loadProducts();
-});
+    setupMenu();
+    setupProductFilters();
+    loadProducts();
+  }
+);
 
 
 /* ==================================================
@@ -54,32 +71,57 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function setupMenu() {
   const menuButton =
-    document.getElementById("menu-button");
+    document.getElementById(
+      "menu-button"
+    );
 
   const navLinks =
-    document.getElementById("nav-links");
+    document.getElementById(
+      "nav-links"
+    );
 
   if (!menuButton || !navLinks) {
     return;
   }
 
-  menuButton.addEventListener("click", function() {
-    navLinks.classList.toggle("nav-open");
-  });
+  menuButton.addEventListener(
+    "click",
+    function() {
+      const isOpen =
+        navLinks.classList.toggle(
+          "nav-open"
+        );
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        String(isOpen)
+      );
+    }
+  );
 
   const links =
     navLinks.querySelectorAll("a");
 
   links.forEach(function(link) {
-    link.addEventListener("click", function() {
-      navLinks.classList.remove("nav-open");
-    });
+    link.addEventListener(
+      "click",
+      function() {
+        navLinks.classList.remove(
+          "nav-open"
+        );
+
+        menuButton.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
+    );
   });
 }
 
 
 /* ==================================================
-   5. PRODUCT FILTERS
+   5. SEARCH AND FILTER EVENTS
 ================================================== */
 
 function setupProductFilters() {
@@ -100,14 +142,17 @@ function setupProductFilters() {
 
 
 /* ==================================================
-   6. LOAD PRODUCTS FROM APPS SCRIPT
+   6. LOAD PRODUCTS USING JSONP
 ================================================== */
 
-async function loadProducts() {
-  if (!API_URL ||
-      API_URL.includes("PASTE-YOUR")) {
+function loadProducts() {
+  if (
+    !API_URL ||
+    API_URL.includes("PASTE-YOUR") ||
+    !API_URL.endsWith("/exec")
+  ) {
     showMessage(
-      "Please add your Apps Script Web App URL in script.js."
+      "Please add a valid Apps Script Web App URL in script.js."
     );
 
     return;
@@ -115,47 +160,98 @@ async function loadProducts() {
 
   if (!productContainer) {
     console.error(
-      "Element with ID product-container was not found."
+      "product-container was not found in index.html."
     );
 
     return;
   }
 
-  try {
-    showMessage("Loading products...");
+  showMessage("Loading products...");
 
-    const requestUrl =
-      API_URL + "?action=products";
+  const callbackName =
+    "organicProductsCallback_" +
+    Date.now();
 
-    const response =
-      await fetch(requestUrl);
+  window[callbackName] =
+    function(data) {
+      try {
+        if (
+          !data ||
+          data.success !== true
+        ) {
+          throw new Error(
+            data && data.message
+              ? data.message
+              : "Products could not be loaded."
+          );
+        }
 
-    if (!response.ok) {
-      throw new Error(
-        "The product service could not be reached."
+        displayProducts(
+          Array.isArray(data.products)
+            ? data.products
+            : []
+        );
+
+      } catch (error) {
+        console.error(
+          "Product loading error:",
+          error
+        );
+
+        productContainer.innerHTML =
+          "";
+
+        showMessage(
+          "Error: " + error.message
+        );
+
+      } finally {
+        const oldScript =
+          document.getElementById(
+            callbackName
+          );
+
+        if (oldScript) {
+          oldScript.remove();
+        }
+
+        delete window[callbackName];
+      }
+    };
+
+  const requestScript =
+    document.createElement("script");
+
+  requestScript.id =
+    callbackName;
+
+  requestScript.src =
+    API_URL +
+    "?action=products&callback=" +
+    encodeURIComponent(callbackName);
+
+  requestScript.onerror =
+    function() {
+      console.error(
+        "Apps Script JSONP request failed."
       );
-    }
 
-    const data =
-      await response.json();
+      if (productContainer) {
+        productContainer.innerHTML =
+          "";
+      }
 
-    if (!data.success) {
-      throw new Error(
-        data.message || "Products could not be loaded."
+      showMessage(
+        "Unable to connect to the product service."
       );
-    }
 
-    displayProducts(data.products || []);
+      requestScript.remove();
+      delete window[callbackName];
+    };
 
-  } catch (error) {
-    console.error("Product loading error:", error);
-
-    productContainer.innerHTML = "";
-
-    showMessage(
-      "Products could not be loaded. Please try again later."
-    );
-  }
+  document.body.appendChild(
+    requestScript
+  );
 }
 
 
@@ -168,9 +264,13 @@ function displayProducts(products) {
     return;
   }
 
-  productContainer.innerHTML = "";
+  productContainer.innerHTML =
+    "";
 
-  if (!products || products.length === 0) {
+  if (
+    !products ||
+    products.length === 0
+  ) {
     showMessage(
       "No products are currently available."
     );
@@ -186,7 +286,8 @@ function displayProducts(products) {
   });
 
   showMessage(
-    products.length + " products available"
+    products.length +
+    " products available"
   );
 }
 
@@ -203,9 +304,7 @@ function createProductCard(product) {
     "product-card";
 
   /*
-    This attribute is required by the category filter.
-    Example:
-    data-category="ketchup"
+    Required for category filtering.
   */
 
   card.setAttribute(
@@ -218,10 +317,6 @@ function createProductCard(product) {
   const productId =
     product["Product ID"] || "";
 
-  const imageUrl =
-    product["Image URL"] ||
-    "https://placehold.co/600x400/eaf6ee/174d35?text=Organic+Snack";
-
   const productName =
     product["Product Name"] ||
     "Organic Snack";
@@ -229,6 +324,10 @@ function createProductCard(product) {
   const category =
     product["Category"] ||
     "Snack";
+
+  const imageUrl =
+    product["Image URL"] ||
+    "https://placehold.co/800x520/e6f8ed/114b35?text=Organic+Snack";
 
   const description =
     product["Description"] ||
@@ -259,7 +358,7 @@ function createProductCard(product) {
 
   const storage =
     product["Storage"] ||
-    "Store according to the product label.";
+    "Please check the product label.";
 
   const availability =
     product["Availability"] ||
@@ -274,7 +373,9 @@ function createProductCard(product) {
     ).toLowerCase() === "yes";
 
   const availabilityClass =
-    getAvailabilityClass(availability);
+    getAvailabilityClass(
+      availability
+    );
 
   card.innerHTML = `
     <img
@@ -339,9 +440,7 @@ function createProductCard(product) {
 
       </div>
 
-      <span
-        class="availability ${availabilityClass}"
-      >
+      <span class="availability ${availabilityClass}">
         ${escapeHTML(availability)}
       </span>
 
@@ -367,26 +466,33 @@ function createProductCard(product) {
   `;
 
   const detailsButton =
-    card.querySelector(".details-button");
+    card.querySelector(
+      ".details-button"
+    );
 
   if (detailsButton) {
     detailsButton.addEventListener(
       "click",
       function() {
-        showProductMessage(productName);
+        showProductMessage(
+          productName,
+          productId
+        );
       }
     );
   }
 
   const productImage =
-    card.querySelector(".product-image");
+    card.querySelector(
+      ".product-image"
+    );
 
   if (productImage) {
     productImage.addEventListener(
       "error",
       function() {
         productImage.src =
-          "https://placehold.co/600x400/eaf6ee/174d35?text=Organic+Snack";
+          "https://placehold.co/800x520/e6f8ed/114b35?text=Organic+Snack";
       }
     );
   }
@@ -396,10 +502,13 @@ function createProductCard(product) {
 
 
 /* ==================================================
-   9. PRODUCT AVAILABILITY
+   9. AVAILABILITY
 ================================================== */
 
-function getAvailability(stock, specialOrder) {
+function getAvailability(
+  stock,
+  specialOrder
+) {
   const currentStock =
     Number(stock) || 0;
 
@@ -431,9 +540,13 @@ function getAvailability(stock, specialOrder) {
    10. AVAILABILITY CSS CLASS
 ================================================== */
 
-function getAvailabilityClass(availability) {
+function getAvailabilityClass(
+  availability
+) {
   const value =
-    String(availability || "").toLowerCase();
+    String(
+      availability || ""
+    ).toLowerCase();
 
   if (value.includes("out")) {
     return "availability-out";
@@ -452,47 +565,62 @@ function getAvailabilityClass(availability) {
 
 
 /* ==================================================
-   11. SEARCH AND CATEGORY FILTER
+   11. FILTER PRODUCTS
 ================================================== */
 
 function filterProductCards() {
   const searchValue =
     productSearch
-      ? productSearch.value.toLowerCase().trim()
+      ? productSearch.value
+          .toLowerCase()
+          .trim()
       : "";
 
   const categoryValue =
     categoryFilter
-      ? categoryFilter.value.toLowerCase()
+      ? categoryFilter.value
+          .toLowerCase()
       : "all";
 
   const cards =
-    document.querySelectorAll(".product-card");
+    document.querySelectorAll(
+      ".product-card"
+    );
 
   let visibleCount = 0;
 
   cards.forEach(function(card) {
     const cardText =
-      card.textContent.toLowerCase();
+      card.textContent
+        .toLowerCase();
 
     const cardCategory =
-      card.getAttribute("data-category") || "";
+      card.getAttribute(
+        "data-category"
+      ) || "";
 
     const matchesSearch =
-      cardText.includes(searchValue);
+      cardText.includes(
+        searchValue
+      );
 
     const matchesCategory =
       categoryValue === "all" ||
-      cardCategory.includes(categoryValue);
+      cardCategory.includes(
+        categoryValue
+      );
 
     if (
       matchesSearch &&
       matchesCategory
     ) {
-      card.style.display = "";
+      card.style.display =
+        "";
+
       visibleCount++;
     } else {
-      card.style.display = "none";
+      card.style.display =
+        "none";
     }
   });
 
@@ -501,40 +629,49 @@ function filterProductCards() {
   }
 
   if (visibleCount === 0) {
-    showMessage("No matching products found.");
+    showMessage(
+      "No matching products found."
+    );
   } else {
     showMessage(
-      visibleCount + " products shown"
+      visibleCount +
+      " products shown"
     );
   }
 }
 
 
 /* ==================================================
-   12. PRODUCT INFORMATION MESSAGE
+   12. PRODUCT BUTTON
 ================================================== */
 
-function showProductMessage(productName) {
+function showProductMessage(
+  productName,
+  productId
+) {
   alert(
     productName +
-    " details are displayed on this page."
+    " is product ID " +
+    productId +
+    ". Detailed ordering will be added next."
   );
 }
 
 
 /* ==================================================
-   13. DISPLAY PAGE MESSAGES
+   13. STATUS MESSAGE
 ================================================== */
 
 function showMessage(message) {
   if (productMessage) {
-    productMessage.textContent = message;
+    productMessage.textContent =
+      message;
   }
 }
 
 
 /* ==================================================
-   14. HTML SAFETY FUNCTIONS
+   14. HTML SAFETY
 ================================================== */
 
 function escapeHTML(value) {
