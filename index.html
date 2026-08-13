@@ -10,7 +10,7 @@
 
   <meta
     name="description"
-    content="Fresh organic-style snacks including tomato ketchup, laddu and cookies made with selected ingredients."
+    content="Organic snacks including tomato ketchup, laddu and cookies prepared with clearly displayed ingredients."
   >
 
   <title>
@@ -25,6 +25,8 @@
 
 <body>
 
+  <!-- ================= HEADER ================= -->
+
   <header class="site-header">
 
     <nav class="navbar">
@@ -38,25 +40,46 @@
       </a>
 
       <button
-        class="menu-button"
         id="menu-button"
+        class="menu-button"
         type="button"
         aria-label="Open navigation menu"
+        aria-expanded="false"
       >
         ☰
       </button>
 
       <div
-        class="nav-links"
         id="nav-links"
+        class="nav-links"
       >
-        <a href="#home">Home</a>
-        <a href="#products">Products</a>
-        <a href="#organic-info">Organic Information</a>
-        <a href="#videos">Videos</a>
-        <a href="#articles">Articles</a>
-        <a href="#special-orders">Special Orders</a>
-        <a href="#contact">Contact</a>
+        <a href="#home">
+          Home
+        </a>
+
+        <a href="#products">
+          Products
+        </a>
+
+        <a href="#organic-info">
+          Organic Information
+        </a>
+
+        <a href="#videos">
+          Videos
+        </a>
+
+        <a href="#articles">
+          Articles
+        </a>
+
+        <a href="#special-orders">
+          Special Orders
+        </a>
+
+        <a href="#contact">
+          Contact
+        </a>
       </div>
 
     </nav>
@@ -64,12 +87,17 @@
   </header>
 
 
+  <!-- ================= MAIN CONTENT ================= -->
+
   <main>
 
+    <!-- ================= HERO SECTION ================= -->
+
     <section
-      class="hero-section"
       id="home"
+      class="hero-section"
     >
+
       <div class="hero-content">
 
         <p class="eyebrow">
@@ -84,10 +112,12 @@
 
         <p class="hero-text">
           Discover tomato ketchup, traditional laddu and delicious cookies
-          prepared with clearly displayed ingredients and preparation details.
+          with clearly displayed ingredients, preparation details and
+          availability information.
         </p>
 
         <div class="hero-buttons">
+
           <a
             class="primary-button"
             href="#products"
@@ -101,25 +131,35 @@
           >
             Learn More
           </a>
+
         </div>
 
       </div>
 
       <div class="hero-image-wrapper">
+
         <img
           class="hero-image"
           src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=900&q=85"
           alt="Fresh organic ingredients"
         >
+
       </div>
+
     </section>
 
+
+    <!-- ================= TRUST SECTION ================= -->
 
     <section class="trust-section">
 
       <div class="trust-item">
         <span class="trust-icon">🌾</span>
-        <h3>Clear Ingredients</h3>
+
+        <h3>
+          Clear Ingredients
+        </h3>
+
         <p>
           Product ingredients are displayed clearly.
         </p>
@@ -127,7 +167,11 @@
 
       <div class="trust-item">
         <span class="trust-icon">🧈</span>
-        <h3>Ghee and Butter Options</h3>
+
+        <h3>
+          Ghee and Butter Options
+        </h3>
+
         <p>
           See whether products use ghee, butter or oil.
         </p>
@@ -135,7 +179,11 @@
 
       <div class="trust-item">
         <span class="trust-icon">📦</span>
-        <h3>Visible Availability</h3>
+
+        <h3>
+          Visible Availability
+        </h3>
+
         <p>
           Product availability is connected to current stock.
         </p>
@@ -143,7 +191,11 @@
 
       <div class="trust-item">
         <span class="trust-icon">🍪</span>
-        <h3>Small-Batch Focus</h3>
+
+        <h3>
+          Small-Batch Focus
+        </h3>
+
         <p>
           Discover products prepared in selected batches.
         </p>
@@ -152,12 +204,15 @@
     </section>
 
 
+    <!-- ================= PRODUCTS SECTION ================= -->
+
     <section
-      class="page-section"
       id="products"
+      class="page-section"
     >
 
       <div class="section-heading">
+
         <p class="eyebrow">
           OUR PRODUCTS
         </p>
@@ -168,9 +223,13 @@
 
         <p>
           Browse our current products. Prices and availability are loaded
-          from our latest store inventory.
+          from the latest store inventory.
         </p>
+
       </div>
+
+
+      <!-- PRODUCT SEARCH AND FILTER -->
 
       <div class="product-toolbar">
 
@@ -186,6 +245,7 @@
           class="search-input"
           type="search"
           placeholder="Search ketchup, laddu, cookies..."
+          autocomplete="off"
         >
 
         <label
@@ -199,14 +259,31 @@
           id="category-filter"
           class="category-filter"
         >
-          <option value="all">All Categories</option>
-          <option value="ketchup">Ketchup</option>
-          <option value="laddu">Laddu</option>
-          <option value="cookies">Cookies</option>
-          <option value="snacks">Snacks</option>
+          <option value="all">
+            All Categories
+          </option>
+
+          <option value="ketchup">
+            Ketchup
+          </option>
+
+          <option value="laddu">
+            Laddu
+          </option>
+
+          <option value="cookies">
+            Cookies
+          </option>
+
+          <option value="snacks">
+            Snacks
+          </option>
         </select>
 
       </div>
+
+
+      <!-- PRODUCT STATUS MESSAGE -->
 
       <p
         id="product-message"
@@ -215,6 +292,9 @@
       >
         Loading products...
       </p>
+
+
+      <!-- PRODUCTS ARE INSERTED HERE BY script.js -->
 
       <div
         id="product-container"
@@ -225,12 +305,15 @@
     </section>
 
 
+    <!-- ================= ORGANIC INFORMATION ================= -->
+
     <section
-      class="page-section information-section"
       id="organic-info"
+      class="page-section information-section"
     >
 
       <div class="section-heading">
+
         <p class="eyebrow">
           ORGANIC INFORMATION
         </p>
@@ -240,28 +323,38 @@
         </h2>
 
         <p>
-          We believe customers should have access to useful information about
-          ingredients, preparation methods and storage.
+          Customers can learn about ingredients, preparation methods,
+          product storage and food labels.
         </p>
+
       </div>
+
 
       <div class="information-grid">
 
         <article class="information-card">
-          <span class="information-icon">🌱</span>
+
+          <span class="information-icon">
+            🌱
+          </span>
 
           <h3>
             Ingredient Transparency
           </h3>
 
           <p>
-            Product pages show the ingredients used, product weight and
-            preparation information.
+            Product pages show ingredients, product weight and preparation
+            information.
           </p>
+
         </article>
 
+
         <article class="information-card">
-          <span class="information-icon">🫙</span>
+
+          <span class="information-icon">
+            🫙
+          </span>
 
           <h3>
             Oil, Ghee and Butter
@@ -271,49 +364,66 @@
             Product information explains whether the product uses no oil,
             desi ghee, white butter or cold-pressed oil.
           </p>
+
         </article>
 
+
         <article class="information-card">
-          <span class="information-icon">📚</span>
+
+          <span class="information-icon">
+            📚
+          </span>
 
           <h3>
             Educational Articles
           </h3>
 
           <p>
-            Read about ingredient sourcing, storage, preparation and food
-            labels.
+            Read about ingredient sourcing, food labels, storage and
+            preparation methods.
           </p>
+
         </article>
 
+
         <article class="information-card">
-          <span class="information-icon">🔎</span>
+
+          <span class="information-icon">
+            🔎
+          </span>
 
           <h3>
             Honest Comparisons
           </h3>
 
           <p>
-            Learn how to compare products using ingredients, labels,
-            preparation methods and available information.
+            Compare products using ingredients, labels and preparation
+            information.
           </p>
+
         </article>
 
       </div>
 
+
       <div class="important-note">
-        <strong>Important:</strong>
+
+        <strong>
+          Important:
+        </strong>
+
         Organic and health-related claims should be supported by proper
         documentation. Product information is for general education and
         should not be treated as medical advice.
+
       </div>
 
     </section>
 
 
-    <section
-      class="page-section preparation-section"
-    >
+    <!-- ================= PREPARATION SECTION ================= -->
+
+    <section class="page-section preparation-section">
 
       <div class="preparation-content">
 
@@ -327,8 +437,8 @@
 
         <p>
           We focus on simple product information, careful preparation and
-          clear communication. Customers can check product ingredients,
-          storage instructions, shelf life and availability before ordering.
+          clear communication. Customers can check ingredients, storage
+          instructions, shelf life and availability before ordering.
         </p>
 
         <a
@@ -340,10 +450,12 @@
 
       </div>
 
+
       <div class="preparation-list">
 
         <div class="preparation-item">
           <span>01</span>
+
           <p>
             Select ingredients and document product information.
           </p>
@@ -351,6 +463,7 @@
 
         <div class="preparation-item">
           <span>02</span>
+
           <p>
             Prepare products according to the product description.
           </p>
@@ -358,6 +471,7 @@
 
         <div class="preparation-item">
           <span>03</span>
+
           <p>
             Pack products with storage and shelf-life details.
           </p>
@@ -365,6 +479,7 @@
 
         <div class="preparation-item">
           <span>04</span>
+
           <p>
             Update availability when stock changes.
           </p>
@@ -375,12 +490,15 @@
     </section>
 
 
+    <!-- ================= VIDEOS SECTION ================= -->
+
     <section
-      class="page-section"
       id="videos"
+      class="page-section"
     >
 
       <div class="section-heading">
+
         <p class="eyebrow">
           VIDEOS
         </p>
@@ -392,19 +510,23 @@
         <p>
           Product preparation and educational videos will be added here.
         </p>
+
       </div>
+
 
       <div class="content-placeholder">
 
-        <span class="placeholder-icon">▶</span>
+        <span class="placeholder-icon">
+          ▶
+        </span>
 
         <h3>
           Videos coming soon
         </h3>
 
         <p>
-          Add your YouTube video links in the Videos sheet. They will be
-          displayed here in a future update.
+          Add your YouTube video links in the Videos sheet. Videos can be
+          connected to this section in a later update.
         </p>
 
       </div>
@@ -412,12 +534,15 @@
     </section>
 
 
+    <!-- ================= ARTICLES SECTION ================= -->
+
     <section
-      class="page-section"
       id="articles"
+      class="page-section"
     >
 
       <div class="section-heading">
+
         <p class="eyebrow">
           ARTICLES
         </p>
@@ -427,15 +552,20 @@
         </h2>
 
         <p>
-          Read useful articles about ingredients, labels, storage and
+          Read useful information about ingredients, labels, storage and
           preparation.
         </p>
+
       </div>
+
 
       <div class="article-grid">
 
         <article class="article-card">
-          <span class="article-number">01</span>
+
+          <span class="article-number">
+            01
+          </span>
 
           <h3>
             What does organic food mean?
@@ -449,27 +579,37 @@
           <a href="#contact">
             Read more →
           </a>
+
         </article>
 
+
         <article class="article-card">
-          <span class="article-number">02</span>
+
+          <span class="article-number">
+            02
+          </span>
 
           <h3>
             Cold-pressed oil and refined oil
           </h3>
 
           <p>
-            Understand the difference between different oil processing
-            methods and read product labels carefully.
+            Understand different oil-processing methods and learn how to
+            read product labels.
           </p>
 
           <a href="#contact">
             Read more →
           </a>
+
         </article>
 
+
         <article class="article-card">
-          <span class="article-number">03</span>
+
+          <span class="article-number">
+            03
+          </span>
 
           <h3>
             How to store snacks
@@ -483,6 +623,7 @@
           <a href="#contact">
             Read more →
           </a>
+
         </article>
 
       </div>
@@ -490,9 +631,11 @@
     </section>
 
 
+    <!-- ================= SPECIAL ORDERS ================= -->
+
     <section
-      class="page-section special-order-section"
       id="special-orders"
+      class="page-section special-order-section"
     >
 
       <div class="special-order-content">
@@ -506,8 +649,8 @@
         </h2>
 
         <p>
-          Some products may require advance preparation. Contact us with your
-          required quantity, preferred delivery date and product choice.
+          Some products may require advance preparation. Contact us with
+          your required quantity, preferred delivery date and product choice.
         </p>
 
         <a
@@ -519,21 +662,45 @@
 
       </div>
 
+
       <div class="special-order-box">
 
         <div class="special-order-row">
-          <strong>Suitable for:</strong>
-          <span>Events, festivals and gifts</span>
+
+          <strong>
+            Suitable for:
+          </strong>
+
+          <span>
+            Events, festivals and gifts
+          </span>
+
         </div>
 
-        <div class="special-order-row">
-          <strong>Products:</strong>
-          <span>Laddu, cookies and snack boxes</span>
-        </div>
 
         <div class="special-order-row">
-          <strong>Notice:</strong>
-          <span>Preparation time may apply</span>
+
+          <strong>
+            Products:
+          </strong>
+
+          <span>
+            Laddu, cookies and snack boxes
+          </span>
+
+        </div>
+
+
+        <div class="special-order-row">
+
+          <strong>
+            Notice:
+          </strong>
+
+          <span>
+            Preparation time may apply
+          </span>
+
         </div>
 
       </div>
@@ -541,12 +708,15 @@
     </section>
 
 
+    <!-- ================= CONTACT SECTION ================= -->
+
     <section
-      class="page-section"
       id="contact"
+      class="page-section"
     >
 
       <div class="section-heading">
+
         <p class="eyebrow">
           CONTACT US
         </p>
@@ -556,15 +726,20 @@
         </h2>
 
         <p>
-          Replace the sample details below with your actual business
+          Replace the sample contact details below with your actual business
           information.
         </p>
+
       </div>
+
 
       <div class="contact-grid">
 
         <div class="contact-card">
-          <span class="contact-icon">📞</span>
+
+          <span class="contact-icon">
+            📞
+          </span>
 
           <h3>
             Phone
@@ -575,10 +750,15 @@
               +91 98765 43210
             </a>
           </p>
+
         </div>
 
+
         <div class="contact-card">
-          <span class="contact-icon">✉️</span>
+
+          <span class="contact-icon">
+            ✉️
+          </span>
 
           <h3>
             Email
@@ -589,10 +769,15 @@
               your@email.com
             </a>
           </p>
+
         </div>
 
+
         <div class="contact-card">
-          <span class="contact-icon">💬</span>
+
+          <span class="contact-icon">
+            💬
+          </span>
 
           <h3>
             WhatsApp
@@ -607,10 +792,15 @@
               Chat with us
             </a>
           </p>
+
         </div>
 
+
         <div class="contact-card">
-          <span class="contact-icon">📍</span>
+
+          <span class="contact-icon">
+            📍
+          </span>
 
           <h3>
             Address
@@ -619,6 +809,7 @@
           <p>
             Your business address
           </p>
+
         </div>
 
       </div>
@@ -628,11 +819,14 @@
   </main>
 
 
+  <!-- ================= FOOTER ================= -->
+
   <footer class="site-footer">
 
     <div class="footer-content">
 
       <div class="footer-brand">
+
         <h2>
           🌿 Organic Snacks
         </h2>
@@ -640,33 +834,64 @@
         <p>
           Simple snacks with clear information.
         </p>
+
       </div>
 
+
       <div class="footer-links">
+
         <h3>
           Quick Links
         </h3>
 
-        <a href="#home">Home</a>
-        <a href="#products">Products</a>
-        <a href="#organic-info">Organic Information</a>
-        <a href="#contact">Contact</a>
+        <a href="#home">
+          Home
+        </a>
+
+        <a href="#products">
+          Products
+        </a>
+
+        <a href="#organic-info">
+          Organic Information
+        </a>
+
+        <a href="#contact">
+          Contact
+        </a>
+
       </div>
 
+
       <div class="footer-links">
+
         <h3>
           Information
         </h3>
 
-        <a href="#articles">Articles</a>
-        <a href="#videos">Videos</a>
-        <a href="#special-orders">Special Orders</a>
-        <a href="#contact">Reviews</a>
+        <a href="#articles">
+          Articles
+        </a>
+
+        <a href="#videos">
+          Videos
+        </a>
+
+        <a href="#special-orders">
+          Special Orders
+        </a>
+
+        <a href="#contact">
+          Reviews
+        </a>
+
       </div>
 
     </div>
 
+
     <div class="footer-bottom">
+
       <p>
         © 2025 Organic Snacks Store. All rights reserved.
       </p>
@@ -674,97 +899,14 @@
       <p>
         Replace this footer with your real business information.
       </p>
+
     </div>
 
   </footer>
 
 
+  <!-- Load JavaScript only once -->
   <script src="script.js"></script>
-
-  <script>
-    const menuButton =
-      document.getElementById("menu-button");
-
-    const navLinks =
-      document.getElementById("nav-links");
-
-    if (menuButton && navLinks) {
-      menuButton.addEventListener("click", function() {
-        navLinks.classList.toggle("nav-open");
-      });
-
-      navLinks.querySelectorAll("a").forEach(function(link) {
-        link.addEventListener("click", function() {
-          navLinks.classList.remove("nav-open");
-        });
-      });
-    }
-
-    const productSearch =
-      document.getElementById("product-search");
-
-    const categoryFilter =
-      document.getElementById("category-filter");
-
-    if (productSearch) {
-      productSearch.addEventListener("input", function() {
-        filterProductCards();
-      });
-    }
-
-    if (categoryFilter) {
-      categoryFilter.addEventListener("change", function() {
-        filterProductCards();
-      });
-    }
-
-    function filterProductCards() {
-      const searchValue =
-        productSearch.value.toLowerCase().trim();
-
-      const categoryValue =
-        categoryFilter.value.toLowerCase();
-
-      const cards =
-        document.querySelectorAll(".product-card");
-
-      let visibleCount = 0;
-
-      cards.forEach(function(card) {
-        const cardText =
-          card.textContent.toLowerCase();
-
-        const cardCategory =
-          card.getAttribute("data-category") || "";
-
-        const matchesSearch =
-          cardText.includes(searchValue);
-
-        const matchesCategory =
-          categoryValue === "all" ||
-          cardCategory.includes(categoryValue);
-
-        if (matchesSearch && matchesCategory) {
-          card.style.display = "";
-          visibleCount++;
-        } else {
-          card.style.display = "none";
-        }
-      });
-
-      const message =
-        document.getElementById("product-message");
-
-      if (
-        message &&
-        cards.length > 0 &&
-        visibleCount === 0
-      ) {
-        message.textContent =
-          "No matching products found.";
-      }
-    }
-  </script>
 
 </body>
 </html>
