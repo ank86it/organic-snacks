@@ -1,6 +1,6 @@
 /*
   ORGANIC SNACKS STORE
-  Product display using JSONP
+  Stage 9 Frontend JavaScript
 
   Website:
   GitHub Pages
@@ -27,6 +27,16 @@ const API_URL =
 
 let productContainer;
 let productMessage;
+
+let featuredContainer;
+let featuredMessage;
+
+let videoContainer;
+let videoMessage;
+
+let articleContainer;
+let articleMessage;
+
 let productSearch;
 let categoryFilter;
 
@@ -48,6 +58,36 @@ document.addEventListener(
         "product-message"
       );
 
+    featuredContainer =
+      document.getElementById(
+        "featured-container"
+      );
+
+    featuredMessage =
+      document.getElementById(
+        "featured-message"
+      );
+
+    videoContainer =
+      document.getElementById(
+        "video-container"
+      );
+
+    videoMessage =
+      document.getElementById(
+        "video-message"
+      );
+
+    articleContainer =
+      document.getElementById(
+        "article-container"
+      );
+
+    articleMessage =
+      document.getElementById(
+        "article-message"
+      );
+
     productSearch =
       document.getElementById(
         "product-search"
@@ -60,7 +100,10 @@ document.addEventListener(
 
     setupMenu();
     setupProductFilters();
+
     loadProducts();
+    loadArticles();
+    loadVideos();
   }
 );
 
@@ -121,7 +164,7 @@ function setupMenu() {
 
 
 /* ==================================================
-   5. SEARCH AND FILTER EVENTS
+   5. SEARCH AND CATEGORY FILTER
 ================================================== */
 
 function setupProductFilters() {
@@ -142,7 +185,7 @@ function setupProductFilters() {
 
 
 /* ==================================================
-   6. LOAD PRODUCTS USING JSONP
+   6. LOAD PRODUCTS
 ================================================== */
 
 function loadProducts() {
@@ -151,117 +194,63 @@ function loadProducts() {
     API_URL.includes("PASTE-YOUR") ||
     !API_URL.endsWith("/exec")
   ) {
-    showMessage(
-      "Please add a valid Apps Script Web App URL in script.js."
+    showProductMessage(
+      "Please add a valid Apps Script Web App URL."
     );
 
     return;
   }
 
-  if (!productContainer) {
-    console.error(
-      "product-container was not found."
-    );
-
-    return;
-  }
-
-  showMessage("Loading products...");
-
-  const callbackName =
-    "organicProductsCallback";
-
-  /*
-    Remove an old callback if one exists.
-  */
-
-  if (window[callbackName]) {
-    delete window[callbackName];
-  }
-
-  window[callbackName] = function(data) {
-    console.log(
-      "Apps Script response:",
-      data
-    );
-
-    if (
-      !data ||
-      data.success !== true
-    ) {
-      productContainer.innerHTML = "";
-
-      showMessage(
-        data && data.message
-          ? "Error: " + data.message
-          : "Products could not be loaded."
-      );
-
-      delete window[callbackName];
-
-      return;
-    }
-
-    displayProducts(
-      Array.isArray(data.products)
-        ? data.products
-        : []
-    );
-
-    delete window[callbackName];
-
-    const loadedScript =
-      document.getElementById(
-        "organic-products-request"
-      );
-
-    if (loadedScript) {
-      loadedScript.remove();
-    }
-  };
-
-  const requestScript =
-    document.createElement("script");
-
-  requestScript.id =
-    "organic-products-request";
-
-  requestScript.async = true;
-
-  requestScript.src =
-    API_URL +
-    "?action=products" +
-    "&callback=" +
-    callbackName +
-    "&v=" +
-    Date.now();
-
-  console.log(
-    "Requesting products from:",
-    requestScript.src
+  showProductMessage(
+    "Loading products..."
   );
 
-  requestScript.onerror = function() {
-    console.error(
-      "Product request failed:",
-      requestScript.src
-    );
+  createJsonpRequest(
+    "products",
+    "organicProductsCallback",
+    function(data) {
+      if (
+        !data ||
+        data.success !== true
+      ) {
+        throw new Error(
+          data && data.message
+            ? data.message
+            : "Products could not be loaded."
+        );
+      }
 
-    productContainer.innerHTML = "";
+      const products =
+        Array.isArray(data.products)
+          ? data.products
+          : [];
 
-    showMessage(
-      "Unable to connect to the product service."
-    );
+      displayProducts(products);
+      displayFeaturedProducts(products);
+    },
+    function() {
+      if (productContainer) {
+        productContainer.innerHTML = "";
+      }
 
-    requestScript.remove();
-    delete window[callbackName];
-  };
+      if (featuredContainer) {
+        featuredContainer.innerHTML = "";
+      }
 
-  document.body.appendChild(requestScript);
+      showProductMessage(
+        "Unable to connect to the product service."
+      );
+
+      showFeaturedMessage(
+        "Featured products could not be loaded."
+      );
+    }
+  );
 }
 
+
 /* ==================================================
-   7. DISPLAY PRODUCTS
+   7. DISPLAY ALL PRODUCTS
 ================================================== */
 
 function displayProducts(products) {
@@ -269,14 +258,13 @@ function displayProducts(products) {
     return;
   }
 
-  productContainer.innerHTML =
-    "";
+  productContainer.innerHTML = "";
 
   if (
     !products ||
     products.length === 0
   ) {
-    showMessage(
+    showProductMessage(
       "No products are currently available."
     );
 
@@ -290,7 +278,7 @@ function displayProducts(products) {
     productContainer.appendChild(card);
   });
 
-  showMessage(
+  showProductMessage(
     products.length +
     " products available"
   );
@@ -298,25 +286,74 @@ function displayProducts(products) {
 
 
 /* ==================================================
-   8. CREATE PRODUCT CARD
+   8. DISPLAY FEATURED PRODUCTS
 ================================================== */
 
-function createProductCard(product) {
+function displayFeaturedProducts(products) {
+  if (!featuredContainer) {
+    return;
+  }
+
+  featuredContainer.innerHTML = "";
+
+  if (
+    !products ||
+    products.length === 0
+  ) {
+    showFeaturedMessage(
+      "Featured products will be added soon."
+    );
+
+    return;
+  }
+
+  /*
+    The first three active products are featured
+    in this first version.
+  */
+
+  const featuredProducts =
+    products.slice(0, 3);
+
+  featuredProducts.forEach(function(product) {
+    const card =
+      createProductCard(
+        product,
+        true
+      );
+
+    featuredContainer.appendChild(card);
+  });
+
+  showFeaturedMessage(
+    featuredProducts.length +
+    " featured products"
+  );
+}
+
+
+/* ==================================================
+   9. CREATE PRODUCT CARD
+================================================== */
+
+function createProductCard(
+  product,
+  compactCard
+) {
   const card =
     document.createElement("article");
 
   card.className =
-    "product-card";
+    compactCard
+      ? "product-card featured-card"
+      : "product-card";
 
-  /*
-    Required for category filtering.
-  */
+  const category =
+    product["Category"] || "Snack";
 
   card.setAttribute(
     "data-category",
-    String(
-      product["Category"] || ""
-    ).toLowerCase()
+    String(category).toLowerCase()
   );
 
   const productId =
@@ -325,10 +362,6 @@ function createProductCard(product) {
   const productName =
     product["Product Name"] ||
     "Organic Snack";
-
-  const category =
-    product["Category"] ||
-    "Snack";
 
   const imageUrl =
     product["Image URL"] ||
@@ -382,30 +415,10 @@ function createProductCard(product) {
       availability
     );
 
-  card.innerHTML = `
-    <img
-      class="product-image"
-      src="${escapeAttribute(imageUrl)}"
-      alt="${escapeAttribute(productName)}"
-      loading="lazy"
-    >
-
-    <div class="product-card-content">
-
-      <span class="product-category">
-        ${escapeHTML(category)}
-      </span>
-
-      <h3>
-        ${escapeHTML(productName)}
-      </h3>
-
-      <p class="product-description">
-        ${escapeHTML(description)}
-      </p>
-
-      <div class="product-information">
-
+  const detailedInformation =
+    compactCard
+      ? ""
+      : `
         <p>
           <strong>Ingredients:</strong>
           ${escapeHTML(ingredients)}
@@ -430,8 +443,39 @@ function createProductCard(product) {
           <strong>Storage:</strong>
           ${escapeHTML(storage)}
         </p>
+      `;
 
-      </div>
+  card.innerHTML = `
+    <img
+      class="product-image"
+      src="${escapeAttribute(imageUrl)}"
+      alt="${escapeAttribute(productName)}"
+      loading="lazy"
+    >
+
+    <div class="product-card-content">
+
+      <span class="product-category">
+        ${escapeHTML(category)}
+      </span>
+
+      <h3>
+        ${escapeHTML(productName)}
+      </h3>
+
+      <p class="product-description">
+        ${escapeHTML(description)}
+      </p>
+
+      ${
+        detailedInformation
+          ? `
+            <div class="product-information">
+              ${detailedInformation}
+            </div>
+          `
+          : ""
+      }
 
       <div class="product-meta">
 
@@ -464,28 +508,11 @@ function createProductCard(product) {
         type="button"
         data-product-id="${escapeAttribute(productId)}"
       >
-        View Information
+        ${compactCard ? "View Product" : "View Information"}
       </button>
 
     </div>
   `;
-
-  const detailsButton =
-    card.querySelector(
-      ".details-button"
-    );
-
-  if (detailsButton) {
-    detailsButton.addEventListener(
-      "click",
-      function() {
-        showProductMessage(
-          productName,
-          productId
-        );
-      }
-    );
-  }
 
   const productImage =
     card.querySelector(
@@ -502,12 +529,513 @@ function createProductCard(product) {
     );
   }
 
+  const detailsButton =
+    card.querySelector(
+      ".details-button"
+    );
+
+  if (detailsButton) {
+    detailsButton.addEventListener(
+      "click",
+      function() {
+        showProductMessage(
+          productName,
+          productId
+        );
+
+        const productsSection =
+          document.getElementById(
+            "products"
+          );
+
+        if (
+          productsSection &&
+          compactCard
+        ) {
+          productsSection.scrollIntoView({
+            behavior: "smooth"
+          });
+        }
+      }
+    );
+  }
+
   return card;
 }
 
 
 /* ==================================================
-   9. AVAILABILITY
+   10. LOAD ARTICLES
+================================================== */
+
+function loadArticles() {
+  if (!articleContainer) {
+    return;
+  }
+
+  showArticleMessage(
+    "Loading articles..."
+  );
+
+  createJsonpRequest(
+    "articles",
+    "organicArticlesCallback",
+    function(data) {
+      if (
+        !data ||
+        data.success !== true
+      ) {
+        throw new Error(
+          data && data.message
+            ? data.message
+            : "Articles could not be loaded."
+        );
+      }
+
+      const articles =
+        Array.isArray(data.records)
+          ? data.records
+          : [];
+
+      displayArticles(articles);
+    },
+    function() {
+      articleContainer.innerHTML =
+        "";
+
+      showArticleMessage(
+        "Unable to load articles."
+      );
+    }
+  );
+}
+
+
+/* ==================================================
+   11. DISPLAY ARTICLES
+================================================== */
+
+function displayArticles(articles) {
+  if (!articleContainer) {
+    return;
+  }
+
+  articleContainer.innerHTML = "";
+
+  if (
+    !articles ||
+    articles.length === 0
+  ) {
+    showArticleMessage(
+      "Articles will be added soon."
+    );
+
+    return;
+  }
+
+  articles.forEach(function(article) {
+    const card =
+      createArticleCard(article);
+
+    articleContainer.appendChild(card);
+  });
+
+  showArticleMessage(
+    articles.length +
+    " articles available"
+  );
+}
+
+
+/* ==================================================
+   12. CREATE ARTICLE CARD
+================================================== */
+
+function createArticleCard(article) {
+  const card =
+    document.createElement("article");
+
+  card.className =
+    "article-card";
+
+  const articleId =
+    article["Article ID"] || "";
+
+  const title =
+    article["Title"] ||
+    "Organic Snacks Article";
+
+  const summary =
+    article["Summary"] ||
+    "Read more about organic snacks.";
+
+  const content =
+    article["Content"] ||
+    "Article content will be added soon.";
+
+  const imageUrl =
+    article["Image URL"] ||
+    "";
+
+  card.innerHTML = `
+    ${
+      imageUrl
+        ? `
+          <img
+            class="article-image"
+            src="${escapeAttribute(imageUrl)}"
+            alt="${escapeAttribute(title)}"
+            loading="lazy"
+          >
+        `
+        : ""
+    }
+
+    <span class="article-number">
+      ${escapeHTML(articleId)}
+    </span>
+
+    <h3>
+      ${escapeHTML(title)}
+    </h3>
+
+    <p>
+      ${escapeHTML(summary)}
+    </p>
+
+    <button
+      class="details-button article-button"
+      type="button"
+    >
+      Read Article
+    </button>
+
+    <div
+      class="article-full-content"
+      hidden
+    >
+      ${escapeHTML(content)}
+    </div>
+  `;
+
+  const button =
+    card.querySelector(
+      ".article-button"
+    );
+
+  const fullContent =
+    card.querySelector(
+      ".article-full-content"
+    );
+
+  if (
+    button &&
+    fullContent
+  ) {
+    button.addEventListener(
+      "click",
+      function() {
+        const isHidden =
+          fullContent.hidden;
+
+        fullContent.hidden =
+          !isHidden;
+
+        button.textContent =
+          isHidden
+            ? "Hide Article"
+            : "Read Article";
+      }
+    );
+  }
+
+  return card;
+}
+
+
+/* ==================================================
+   13. LOAD VIDEOS
+================================================== */
+
+function loadVideos() {
+  if (!videoContainer) {
+    return;
+  }
+
+  showVideoMessage(
+    "Loading videos..."
+  );
+
+  createJsonpRequest(
+    "videos",
+    "organicVideosCallback",
+    function(data) {
+      if (
+        !data ||
+        data.success !== true
+      ) {
+        throw new Error(
+          data && data.message
+            ? data.message
+            : "Videos could not be loaded."
+        );
+      }
+
+      const videos =
+        Array.isArray(data.records)
+          ? data.records
+          : [];
+
+      displayVideos(videos);
+    },
+    function() {
+      videoContainer.innerHTML =
+        "";
+
+      showVideoMessage(
+        "Unable to load videos."
+      );
+    }
+  );
+}
+
+
+/* ==================================================
+   14. DISPLAY VIDEOS
+================================================== */
+
+function displayVideos(videos) {
+  if (!videoContainer) {
+    return;
+  }
+
+  videoContainer.innerHTML = "";
+
+  if (
+    !videos ||
+    videos.length === 0
+  ) {
+    showVideoMessage(
+      "Videos will be added soon."
+    );
+
+    return;
+  }
+
+  videos.forEach(function(video) {
+    const card =
+      createVideoCard(video);
+
+    videoContainer.appendChild(card);
+  });
+
+  showVideoMessage(
+    videos.length +
+    " videos available"
+  );
+}
+
+
+/* ==================================================
+   15. CREATE VIDEO CARD
+================================================== */
+
+function createVideoCard(video) {
+  const card =
+    document.createElement("article");
+
+  card.className =
+    "video-card";
+
+  const title =
+    video["Title"] ||
+    "Organic Snacks Video";
+
+  const description =
+    video["Description"] ||
+    "Learn more about our products.";
+
+  const videoUrl =
+    video["YouTube URL"] ||
+    "";
+
+  const embedUrl =
+    getYouTubeEmbedUrl(
+      videoUrl
+    );
+
+  card.innerHTML = `
+    <div class="video-frame">
+
+      ${
+        embedUrl
+          ? `
+            <iframe
+              src="${escapeAttribute(embedUrl)}"
+              title="${escapeAttribute(title)}"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          `
+          : `
+            <div class="video-missing">
+              Video link coming soon
+            </div>
+          `
+      }
+
+    </div>
+
+    <div class="video-card-content">
+
+      <h3>
+        ${escapeHTML(title)}
+      </h3>
+
+      <p>
+        ${escapeHTML(description)}
+      </p>
+
+    </div>
+  `;
+
+  return card;
+}
+
+
+/* ==================================================
+   16. YOUTUBE URL CONVERTER
+================================================== */
+
+function getYouTubeEmbedUrl(url) {
+  if (!url) {
+    return "";
+  }
+
+  const value =
+    String(url).trim();
+
+  let videoId =
+    "";
+
+  if (
+    value.includes("watch?v=")
+  ) {
+    videoId =
+      value
+        .split("watch?v=")[1]
+        .split("&")[0];
+  } else if (
+    value.includes("youtu.be/")
+  ) {
+    videoId =
+      value
+        .split("youtu.be/")[1]
+        .split("?")[0];
+  } else if (
+    value.includes("/embed/")
+  ) {
+    videoId =
+      value
+        .split("/embed/")[1]
+        .split("?")[0];
+  }
+
+  if (!videoId) {
+    return "";
+  }
+
+  return (
+    "https://www.youtube.com/embed/" +
+    encodeURIComponent(videoId)
+  );
+}
+
+
+/* ==================================================
+   17. GENERIC JSONP REQUEST
+================================================== */
+
+function createJsonpRequest(
+  action,
+  callbackName,
+  onSuccess,
+  onError
+) {
+  const uniqueCallbackName =
+    callbackName + "_" + Date.now();
+
+  window[uniqueCallbackName] =
+    function(data) {
+      try {
+        onSuccess(data);
+      } catch (error) {
+        console.error(
+          "JSONP response error:",
+          error
+        );
+
+        onError(error);
+      } finally {
+        const oldScript =
+          document.getElementById(
+            uniqueCallbackName
+          );
+
+        if (oldScript) {
+          oldScript.remove();
+        }
+
+        delete window[uniqueCallbackName];
+      }
+    };
+
+  const requestScript =
+    document.createElement("script");
+
+  requestScript.id =
+    uniqueCallbackName;
+
+  requestScript.async =
+    true;
+
+  requestScript.src =
+    API_URL +
+    "?action=" +
+    encodeURIComponent(action) +
+    "&callback=" +
+    encodeURIComponent(
+      uniqueCallbackName
+    ) +
+    "&v=" +
+    Date.now();
+
+  requestScript.onerror =
+    function() {
+      console.error(
+        "JSONP request failed:",
+        requestScript.src
+      );
+
+      onError(
+        new Error(
+          "JSONP request failed."
+        )
+      );
+
+      requestScript.remove();
+      delete window[uniqueCallbackName];
+    };
+
+  document.body.appendChild(
+    requestScript
+  );
+}
+
+
+/* ==================================================
+   18. AVAILABILITY
 ================================================== */
 
 function getAvailability(
@@ -542,7 +1070,7 @@ function getAvailability(
 
 
 /* ==================================================
-   10. AVAILABILITY CSS CLASS
+   19. AVAILABILITY CSS CLASS
 ================================================== */
 
 function getAvailabilityClass(
@@ -553,15 +1081,21 @@ function getAvailabilityClass(
       availability || ""
     ).toLowerCase();
 
-  if (value.includes("out")) {
+  if (
+    value.includes("out")
+  ) {
     return "availability-out";
   }
 
-  if (value.includes("limited")) {
+  if (
+    value.includes("limited")
+  ) {
     return "availability-limited";
   }
 
-  if (value.includes("special")) {
+  if (
+    value.includes("special")
+  ) {
     return "availability-special";
   }
 
@@ -570,7 +1104,7 @@ function getAvailabilityClass(
 
 
 /* ==================================================
-   11. FILTER PRODUCTS
+   20. FILTER PRODUCT CARDS
 ================================================== */
 
 function filterProductCards() {
@@ -589,10 +1123,11 @@ function filterProductCards() {
 
   const cards =
     document.querySelectorAll(
-      ".product-card"
+      "#product-container .product-card"
     );
 
-  let visibleCount = 0;
+  let visibleCount =
+    0;
 
   cards.forEach(function(card) {
     const cardText =
@@ -629,16 +1164,20 @@ function filterProductCards() {
     }
   });
 
-  if (cards.length === 0) {
+  if (
+    cards.length === 0
+  ) {
     return;
   }
 
-  if (visibleCount === 0) {
-    showMessage(
+  if (
+    visibleCount === 0
+  ) {
+    showProductMessage(
       "No matching products found."
     );
   } else {
-    showMessage(
+    showProductMessage(
       visibleCount +
       " products shown"
     );
@@ -647,27 +1186,10 @@ function filterProductCards() {
 
 
 /* ==================================================
-   12. PRODUCT BUTTON
+   21. MESSAGE FUNCTIONS
 ================================================== */
 
-function showProductMessage(
-  productName,
-  productId
-) {
-  alert(
-    productName +
-    " is product ID " +
-    productId +
-    ". Detailed ordering will be added next."
-  );
-}
-
-
-/* ==================================================
-   13. STATUS MESSAGE
-================================================== */
-
-function showMessage(message) {
+function showProductMessage(message) {
   if (productMessage) {
     productMessage.textContent =
       message;
@@ -675,17 +1197,73 @@ function showMessage(message) {
 }
 
 
+function showFeaturedMessage(message) {
+  if (featuredMessage) {
+    featuredMessage.textContent =
+      message;
+  }
+}
+
+
+function showArticleMessage(message) {
+  if (articleMessage) {
+    articleMessage.textContent =
+      message;
+  }
+}
+
+
+function showVideoMessage(message) {
+  if (videoMessage) {
+    videoMessage.textContent =
+      message;
+  }
+}
+
+
 /* ==================================================
-   14. HTML SAFETY
+   22. PRODUCT INFORMATION BUTTON
+================================================== */
+
+function showProductMessageBox(
+  productName,
+  productId
+) {
+  alert(
+    productName +
+    " is product ID " +
+    productId +
+    "."
+  );
+}
+
+
+/* ==================================================
+   23. HTML SAFETY
 ================================================== */
 
 function escapeHTML(value) {
   return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 }
 
 
