@@ -160,7 +160,7 @@ function loadProducts() {
 
   if (!productContainer) {
     console.error(
-      "product-container was not found in index.html."
+      "product-container was not found."
     );
 
     return;
@@ -169,91 +169,96 @@ function loadProducts() {
   showMessage("Loading products...");
 
   const callbackName =
-    "organicProductsCallback_" +
-    Date.now();
+    "organicProductsCallback";
 
-  window[callbackName] =
-    function(data) {
-      try {
-        if (
-          !data ||
-          data.success !== true
-        ) {
-          throw new Error(
-            data && data.message
-              ? data.message
-              : "Products could not be loaded."
-          );
-        }
+  /*
+    Remove an old callback if one exists.
+  */
 
-        displayProducts(
-          Array.isArray(data.products)
-            ? data.products
-            : []
-        );
+  if (window[callbackName]) {
+    delete window[callbackName];
+  }
 
-      } catch (error) {
-        console.error(
-          "Product loading error:",
-          error
-        );
+  window[callbackName] = function(data) {
+    console.log(
+      "Apps Script response:",
+      data
+    );
 
-        productContainer.innerHTML =
-          "";
+    if (
+      !data ||
+      data.success !== true
+    ) {
+      productContainer.innerHTML = "";
 
-        showMessage(
-          "Error: " + error.message
-        );
+      showMessage(
+        data && data.message
+          ? "Error: " + data.message
+          : "Products could not be loaded."
+      );
 
-      } finally {
-        const oldScript =
-          document.getElementById(
-            callbackName
-          );
+      delete window[callbackName];
 
-        if (oldScript) {
-          oldScript.remove();
-        }
+      return;
+    }
 
-        delete window[callbackName];
-      }
-    };
+    displayProducts(
+      Array.isArray(data.products)
+        ? data.products
+        : []
+    );
+
+    delete window[callbackName];
+
+    const loadedScript =
+      document.getElementById(
+        "organic-products-request"
+      );
+
+    if (loadedScript) {
+      loadedScript.remove();
+    }
+  };
 
   const requestScript =
     document.createElement("script");
 
   requestScript.id =
-    callbackName;
+    "organic-products-request";
+
+  requestScript.async = true;
 
   requestScript.src =
     API_URL +
-    "?action=products&callback=" +
-    encodeURIComponent(callbackName);
+    "?action=products" +
+    "&callback=" +
+    callbackName +
+    "&v=" +
+    Date.now();
 
-  requestScript.onerror =
-    function() {
-      console.error(
-        "Apps Script JSONP request failed."
-      );
-
-      if (productContainer) {
-        productContainer.innerHTML =
-          "";
-      }
-
-      showMessage(
-        "Unable to connect to the product service."
-      );
-
-      requestScript.remove();
-      delete window[callbackName];
-    };
-
-  document.body.appendChild(
-    requestScript
+  console.log(
+    "Requesting products from:",
+    requestScript.src
   );
-}
 
+  requestScript.onerror = function() {
+    console.error(
+      "Product request failed:",
+      requestScript.src
+    );
+
+    productContainer.innerHTML = "";
+
+    showMessage(
+      "Unable to connect to the product service."
+    );
+
+    requestScript.remove();
+    delete window[callbackName];
+  };
+
+  document.body.appendChild(requestScript);
+}
 
 /* ==================================================
    7. DISPLAY PRODUCTS
