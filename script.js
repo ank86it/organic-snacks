@@ -669,13 +669,31 @@ function createArticleCard(article) {
     article["Summary"] ||
     "Read more about organic snacks.";
 
-  const content =
+  const shortContent =
     article["Content"] ||
-    "Article content will be added soon.";
+    "";
+
+  const articleUrl =
+    article["Article URL"] || "";
 
   const imageUrl =
-    article["Image URL"] ||
-    "";
+    article["Image URL"] || "";
+
+  const articleButton =
+    articleUrl
+      ? `
+        <a
+          class="details-button article-button"
+          href="${escapeAttribute(articleUrl)}"
+        >
+          Read Full Article
+        </a>
+      `
+      : `
+        <span class="article-url-missing">
+          Full article link coming soon.
+        </span>
+      `;
 
   card.innerHTML = `
     ${
@@ -688,7 +706,11 @@ function createArticleCard(article) {
             loading="lazy"
           >
         `
-        : ""
+        : `
+          <div class="article-image-placeholder">
+            📚
+          </div>
+        `
     }
 
     <span class="article-number">
@@ -699,59 +721,51 @@ function createArticleCard(article) {
       ${escapeHTML(title)}
     </h3>
 
-    <p>
+    <p class="article-summary">
       ${escapeHTML(summary)}
     </p>
 
-    <button
-      class="details-button article-button"
-      type="button"
-    >
-      Read Article
-    </button>
+    ${
+      shortContent
+        ? `
+          <p class="article-short-content">
+            ${escapeHTML(shortContent)}
+          </p>
+        `
+        : ""
+    }
 
-    <div
-      class="article-full-content"
-      hidden
-    >
-      ${escapeHTML(content)}
-    </div>
+    ${articleButton}
   `;
 
-  const button =
-    card.querySelector(
-      ".article-button"
-    );
+  const articleImage =
+    card.querySelector(".article-image");
 
-  const fullContent =
-    card.querySelector(
-      ".article-full-content"
-    );
-
-  if (
-    button &&
-    fullContent
-  ) {
-    button.addEventListener(
-      "click",
+  if (articleImage) {
+    articleImage.addEventListener(
+      "error",
       function() {
-        const isHidden =
-          fullContent.hidden;
+        articleImage.remove();
 
-        fullContent.hidden =
-          !isHidden;
+        const placeholder =
+          document.createElement("div");
 
-        button.textContent =
-          isHidden
-            ? "Hide Article"
-            : "Read Article";
+        placeholder.className =
+          "article-image-placeholder";
+
+        placeholder.textContent =
+          "📚";
+
+        card.insertBefore(
+          placeholder,
+          card.firstChild
+        );
       }
     );
   }
 
   return card;
 }
-
 
 /* ==================================================
    13. LOAD VIDEOS
