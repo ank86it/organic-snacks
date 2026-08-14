@@ -1089,3 +1089,44 @@ button {
     text-align: left;
   }
 }
+.article-card .details-button {
+  display: inline-flex;
+  width: auto;
+  margin-top: 14px;
+  padding: 10px 17px;
+  text-decoration: none;
+}
+
+.article-summary {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.article-short-content {
+  margin: 0 0 15px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.article-url-missing {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 12px;
+  color: #805600;
+  background: #fff0bd;
+  border-radius: 18px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.article-image-placeholder {
+  display: grid;
+  width: 100%;
+  height: 170px;
+  margin-bottom: 16px;
+  place-items: center;
+  background: var(--green-light);
+  border-radius: 14px;
+  font-size: 3rem;
+}
