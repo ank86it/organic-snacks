@@ -503,13 +503,12 @@ function createProductCard(
           : ""
       }
 
-      <button
-        class="details-button"
-        type="button"
-        data-product-id="${escapeAttribute(productId)}"
-      >
-        ${compactCard ? "View Product" : "View Information"}
-      </button>
+     <a
+  class="details-button"
+  href="product.html?id=${encodeURIComponent(productId)}"
+>
+  ${compactCard ? "View Product" : "View Information"}
+</a>
 
     </div>
   `;
@@ -529,37 +528,7 @@ function createProductCard(
     );
   }
 
-  const detailsButton =
-    card.querySelector(
-      ".details-button"
-    );
-
-  if (detailsButton) {
-    detailsButton.addEventListener(
-      "click",
-      function() {
-        showProductMessage(
-          productName,
-          productId
-        );
-
-        const productsSection =
-          document.getElementById(
-            "products"
-          );
-
-        if (
-          productsSection &&
-          compactCard
-        ) {
-          productsSection.scrollIntoView({
-            behavior: "smooth"
-          });
-        }
-      }
-    );
-  }
-
+  
   return card;
 }
 
