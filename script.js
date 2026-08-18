@@ -1273,3 +1273,177 @@ function escapeHTML(value) {
 function escapeAttribute(value) {
   return escapeHTML(value);
 }
+/* ==================================================
+   CART FUNCTIONS FOR HOMEPAGE
+================================================== */
+
+const CART_STORAGE_KEY =
+  "organicSnacksCart";
+
+
+function addProductToCart(product) {
+  let cart = [];
+
+  try {
+    cart =
+      JSON.parse(
+        localStorage.getItem(
+          CART_STORAGE_KEY
+        )
+      ) || [];
+  } catch (error) {
+    cart = [];
+  }
+
+  const productId =
+    String(
+      product["Product ID"] || ""
+    );
+
+  const productName =
+    product["Product Name"] ||
+    "Organic Snack";
+
+  const stock =
+    Number(product["Stock"]) || 0;
+
+  const price =
+    Number(product["Price"]) || 0;
+
+  if (!productId) {
+    alert("Product ID is missing.");
+    return;
+  }
+
+  if (stock <= 0) {
+    alert(
+      "This product is currently unavailable."
+    );
+
+    return;
+  }
+
+  const existingItem =
+    cart.find(function(item) {
+      return String(
+        item.productId
+      ) === productId;
+    });
+
+  if (existingItem) {
+    const currentQuantity =
+      Number(
+        existingItem.quantity
+      ) || 0;
+
+    if (
+      currentQuantity >= stock
+    ) {
+      alert(
+        "Only " +
+        stock +
+        " item(s) are currently available."
+      );
+
+      return;
+    }
+
+    existingItem.quantity =
+      currentQuantity + 1;
+
+  } else {
+    cart.push({
+      productId: productId,
+
+      productName: productName,
+
+      category:
+        product["Category"] || "",
+
+      price: price,
+
+      weight:
+        product["Weight"] || "",
+
+      quantity: 1,
+
+      stock: stock,
+
+      imageUrl:
+        product["Image URL"] || "",
+
+      availability:
+        product["Availability"] ||
+        getAvailability(
+          stock,
+          product["Special Order"]
+        )
+    });
+  }
+
+  localStorage.setItem(
+    CART_STORAGE_KEY,
+    JSON.stringify(cart)
+  );
+
+  updateHomepageCartCount(cart);
+
+  alert(
+    productName +
+    " added to your cart."
+  );
+}
+
+
+function updateHomepageCartCount(cart) {
+  const cartCount =
+    document.getElementById(
+      "homepage-cart-count"
+    );
+
+  if (!cartCount) {
+    return;
+  }
+
+  const totalQuantity =
+    cart.reduce(function(
+      total,
+      item
+    ) {
+      return total +
+        (Number(item.quantity) || 0);
+    }, 0);
+
+  cartCount.textContent =
+    totalQuantity;
+}
+
+
+function loadHomepageCartCount() {
+  let cart = [];
+
+  try {
+    cart =
+      JSON.parse(
+        localStorage.getItem(
+          CART_STORAGE_KEY
+        )
+      ) || [];
+  } catch (error) {
+    cart = [];
+  }
+
+  updateHomepageCartCount(cart);
+}
+
+
+function formatMoney(value) {
+  return (
+    Number(value) || 0
+  ).toLocaleString(
+    "en-IN",
+    {
+      maximumFractionDigits: 2
+    }
+  );
+}
