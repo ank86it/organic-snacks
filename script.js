@@ -1,15 +1,18 @@
 /*
   ORGANIC SNACKS STORE
-  Stage 9 Frontend JavaScript
+  Homepage JavaScript
 
-  Website:
-  GitHub Pages
-
-  Backend:
-  Google Apps Script
-
-  Database:
-  Google Sheets
+  Features:
+  - Products from Google Sheets
+  - Featured products
+  - Articles
+  - YouTube videos
+  - Product search
+  - Category filtering
+  - Mobile menu
+  - Product links
+  - Add to Cart
+  - Cart count
 */
 
 
@@ -19,6 +22,10 @@
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbwE0ce7dStvIRT8xvk_qtrzyEpCPJyYIHPy0BQciRO1J_KHuZ8CQ5wlr_ifqDfN5eqp/exec";
+
+
+const CART_STORAGE_KEY =
+  "organicSnacksCart";
 
 
 /* ==================================================
@@ -100,8 +107,7 @@ document.addEventListener(
 
     setupMenu();
     setupProductFilters();
-
-        loadHomepageCartCount();
+    loadHomepageCartCount();
 
     loadProducts();
     loadArticles();
@@ -144,24 +150,23 @@ function setupMenu() {
     }
   );
 
-  const links =
-    navLinks.querySelectorAll("a");
+  navLinks
+    .querySelectorAll("a")
+    .forEach(function(link) {
+      link.addEventListener(
+        "click",
+        function() {
+          navLinks.classList.remove(
+            "nav-open"
+          );
 
-  links.forEach(function(link) {
-    link.addEventListener(
-      "click",
-      function() {
-        navLinks.classList.remove(
-          "nav-open"
-        );
-
-        menuButton.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-      }
-    );
-  });
+          menuButton.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+        }
+      );
+    });
 }
 
 
@@ -275,7 +280,7 @@ function displayProducts(products) {
 
   products.forEach(function(product) {
     const card =
-      createProductCard(product);
+      createProductCard(product, false);
 
     productContainer.appendChild(card);
   });
@@ -309,20 +314,12 @@ function displayFeaturedProducts(products) {
     return;
   }
 
-  /*
-    The first three active products are featured
-    in this first version.
-  */
-
   const featuredProducts =
     products.slice(0, 3);
 
   featuredProducts.forEach(function(product) {
     const card =
-      createProductCard(
-        product,
-        true
-      );
+      createProductCard(product, true);
 
     featuredContainer.appendChild(card);
   });
@@ -337,6 +334,7 @@ function displayFeaturedProducts(products) {
 /* ==================================================
    9. CREATE PRODUCT CARD
 ================================================== */
+
 function createProductCard(
   product,
   compactCard
@@ -350,7 +348,9 @@ function createProductCard(
       : "product-card";
 
   const productId =
-    product["Product ID"] || "";
+    String(
+      product["Product ID"] || ""
+    );
 
   const productName =
     product["Product Name"] ||
@@ -385,32 +385,34 @@ function createProductCard(
     "";
 
   const price =
-  Number(product["Price"]) || 0;
+    Number(product["Price"]) || 0;
 
-const stock =
-  Number(product["Stock"]) || 0;
+  const stock =
+    Number(product["Stock"]) || 0;
 
-const unavailable =
-  stock <= 0;
+  const unavailable =
+    stock <= 0;
 
-const availability =
-  product["Availability"] ||
-  getAvailability(
-    stock,
-    product["Special Order"]
-  );
+  const availability =
+    product["Availability"] ||
+    getAvailability(
+      stock,
+      product["Special Order"]
+    );
 
   const specialOrder =
     String(
       product["Special Order"] || ""
     ).toLowerCase() === "yes";
 
-
-
   const availabilityClass =
     getAvailabilityClass(
       availability
     );
+
+  const productUrl =
+    "product.html?id=" +
+    encodeURIComponent(productId);
 
   card.setAttribute(
     "data-category",
@@ -436,10 +438,6 @@ const availability =
           ${escapeHTML(preparation)}
         </p>
       `;
-
-  const productUrl =
-    "product.html?id=" +
-    encodeURIComponent(productId);
 
   card.innerHTML = `
     <img
@@ -507,7 +505,11 @@ const availability =
           class="details-button"
           href="${escapeAttribute(productUrl)}"
         >
-          ${compactCard ? "View Product" : "View Information"}
+          ${
+            compactCard
+              ? "View Product"
+              : "View Information"
+          }
         </a>
 
         <button
@@ -516,7 +518,11 @@ const availability =
           data-action="add-to-cart"
           ${unavailable ? "disabled" : ""}
         >
-          ${unavailable ? "Unavailable" : "Add to Cart"}
+          ${
+            unavailable
+              ? "Unavailable"
+              : "Add to Cart"
+          }
         </button>
 
       </div>
@@ -593,8 +599,7 @@ function loadArticles() {
       displayArticles(articles);
     },
     function() {
-      articleContainer.innerHTML =
-        "";
+      articleContainer.innerHTML = "";
 
       showArticleMessage(
         "Unable to load articles."
@@ -667,10 +672,12 @@ function createArticleCard(article) {
     "";
 
   const articleUrl =
-    article["Article URL"] || "";
+    article["Article URL"] ||
+    "";
 
   const imageUrl =
-    article["Image URL"] || "";
+    article["Image URL"] ||
+    "";
 
   const articleButton =
     articleUrl
@@ -732,7 +739,9 @@ function createArticleCard(article) {
   `;
 
   const articleImage =
-    card.querySelector(".article-image");
+    card.querySelector(
+      ".article-image"
+    );
 
   if (articleImage) {
     articleImage.addEventListener(
@@ -759,6 +768,7 @@ function createArticleCard(article) {
 
   return card;
 }
+
 
 /* ==================================================
    13. LOAD VIDEOS
@@ -796,8 +806,7 @@ function loadVideos() {
       displayVideos(videos);
     },
     function() {
-      videoContainer.innerHTML =
-        "";
+      videoContainer.innerHTML = "";
 
       showVideoMessage(
         "Unable to load videos."
@@ -867,9 +876,7 @@ function createVideoCard(video) {
     "";
 
   const embedUrl =
-    getYouTubeEmbedUrl(
-      videoUrl
-    );
+    getYouTubeEmbedUrl(videoUrl);
 
   card.innerHTML = `
     <div class="video-frame">
@@ -923,8 +930,7 @@ function getYouTubeEmbedUrl(url) {
   const value =
     String(url).trim();
 
-  let videoId =
-    "";
+  let videoId = "";
 
   if (
     value.includes("watch?v=")
@@ -961,7 +967,7 @@ function getYouTubeEmbedUrl(url) {
 
 
 /* ==================================================
-   17. GENERIC JSONP REQUEST
+   17. JSONP REQUEST
 ================================================== */
 
 function createJsonpRequest(
@@ -1076,10 +1082,6 @@ function getAvailability(
 }
 
 
-/* ==================================================
-   19. AVAILABILITY CSS CLASS
-================================================== */
-
 function getAvailabilityClass(
   availability
 ) {
@@ -1088,21 +1090,15 @@ function getAvailabilityClass(
       availability || ""
     ).toLowerCase();
 
-  if (
-    value.includes("out")
-  ) {
+  if (value.includes("out")) {
     return "availability-out";
   }
 
-  if (
-    value.includes("limited")
-  ) {
+  if (value.includes("limited")) {
     return "availability-limited";
   }
 
-  if (
-    value.includes("special")
-  ) {
+  if (value.includes("special")) {
     return "availability-special";
   }
 
@@ -1111,7 +1107,7 @@ function getAvailabilityClass(
 
 
 /* ==================================================
-   20. FILTER PRODUCT CARDS
+   19. PRODUCT FILTERING
 ================================================== */
 
 function filterProductCards() {
@@ -1133,13 +1129,11 @@ function filterProductCards() {
       "#product-container .product-card"
     );
 
-  let visibleCount =
-    0;
+  let visibleCount = 0;
 
   cards.forEach(function(card) {
     const cardText =
-      card.textContent
-        .toLowerCase();
+      card.textContent.toLowerCase();
 
     const cardCategory =
       card.getAttribute(
@@ -1147,9 +1141,7 @@ function filterProductCards() {
       ) || "";
 
     const matchesSearch =
-      cardText.includes(
-        searchValue
-      );
+      cardText.includes(searchValue);
 
     const matchesCategory =
       categoryValue === "all" ||
@@ -1161,25 +1153,18 @@ function filterProductCards() {
       matchesSearch &&
       matchesCategory
     ) {
-      card.style.display =
-        "";
-
+      card.style.display = "";
       visibleCount++;
     } else {
-      card.style.display =
-        "none";
+      card.style.display = "none";
     }
   });
 
-  if (
-    cards.length === 0
-  ) {
+  if (cards.length === 0) {
     return;
   }
 
-  if (
-    visibleCount === 0
-  ) {
+  if (visibleCount === 0) {
     showProductMessage(
       "No matching products found."
     );
@@ -1193,97 +1178,8 @@ function filterProductCards() {
 
 
 /* ==================================================
-   21. MESSAGE FUNCTIONS
+   20. HOMEPAGE CART FUNCTIONS
 ================================================== */
-
-function showProductMessage(message) {
-  if (productMessage) {
-    productMessage.textContent =
-      message;
-  }
-}
-
-
-function showFeaturedMessage(message) {
-  if (featuredMessage) {
-    featuredMessage.textContent =
-      message;
-  }
-}
-
-
-function showArticleMessage(message) {
-  if (articleMessage) {
-    articleMessage.textContent =
-      message;
-  }
-}
-
-
-function showVideoMessage(message) {
-  if (videoMessage) {
-    videoMessage.textContent =
-      message;
-  }
-}
-
-
-/* ==================================================
-   22. PRODUCT INFORMATION BUTTON
-================================================== */
-
-function showProductMessageBox(
-  productName,
-  productId
-) {
-  alert(
-    productName +
-    " is product ID " +
-    productId +
-    "."
-  );
-}
-
-
-/* ==================================================
-   23. HTML SAFETY
-================================================== */
-
-function escapeHTML(value) {
-  return String(value)
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-}
-
-
-function escapeAttribute(value) {
-  return escapeHTML(value);
-}
-/* ==================================================
-   CART FUNCTIONS FOR HOMEPAGE
-================================================== */
-
-const CART_STORAGE_KEY =
-  "organicSnacksCart";
-
 
 function addProductToCart(product) {
   let cart = [];
@@ -1340,9 +1236,7 @@ function addProductToCart(product) {
         existingItem.quantity
       ) || 0;
 
-    if (
-      currentQuantity >= stock
-    ) {
+    if (currentQuantity >= stock) {
       alert(
         "Only " +
         stock +
@@ -1354,7 +1248,6 @@ function addProductToCart(product) {
 
     existingItem.quantity =
       currentQuantity + 1;
-
   } else {
     cart.push({
       productId: productId,
@@ -1399,30 +1292,6 @@ function addProductToCart(product) {
 }
 
 
-function updateHomepageCartCount(cart) {
-  const cartCount =
-    document.getElementById(
-      "homepage-cart-count"
-    );
-
-  if (!cartCount) {
-    return;
-  }
-
-  const totalQuantity =
-    cart.reduce(function(
-      total,
-      item
-    ) {
-      return total +
-        (Number(item.quantity) || 0);
-    }, 0);
-
-  cartCount.textContent =
-    totalQuantity;
-}
-
-
 function loadHomepageCartCount() {
   let cart = [];
 
@@ -1441,6 +1310,67 @@ function loadHomepageCartCount() {
 }
 
 
+function updateHomepageCartCount(cart) {
+  const cartCount =
+    document.getElementById(
+      "homepage-cart-count"
+    );
+
+  if (!cartCount) {
+    return;
+  }
+
+  const totalQuantity =
+    cart.reduce(function(total, item) {
+      return total +
+        (Number(item.quantity) || 0);
+    }, 0);
+
+  cartCount.textContent =
+    totalQuantity;
+}
+
+
+/* ==================================================
+   21. MESSAGE FUNCTIONS
+================================================== */
+
+function showProductMessage(message) {
+  if (productMessage) {
+    productMessage.textContent =
+      message;
+  }
+}
+
+
+function showFeaturedMessage(message) {
+  if (featuredMessage) {
+    featuredMessage.textContent =
+      message;
+  }
+}
+
+
+function showArticleMessage(message) {
+  if (articleMessage) {
+    articleMessage.textContent =
+      message;
+  }
+}
+
+
+function showVideoMessage(message) {
+  if (videoMessage) {
+    videoMessage.textContent =
+      message;
+  }
+}
+
+
+/* ==================================================
+   22. MONEY FORMAT
+================================================== */
+
 function formatMoney(value) {
   return (
     Number(value) || 0
@@ -1450,4 +1380,23 @@ function formatMoney(value) {
       maximumFractionDigits: 2
     }
   );
+}
+
+
+/* ==================================================
+   23. HTML SAFETY
+================================================== */
+
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function escapeAttribute(value) {
+  return escapeHTML(value);
 }
