@@ -335,7 +335,6 @@ function displayFeaturedProducts(products) {
 /* ==================================================
    9. CREATE PRODUCT CARD
 ================================================== */
-
 function createProductCard(
   product,
   compactCard
@@ -348,20 +347,16 @@ function createProductCard(
       ? "product-card featured-card"
       : "product-card";
 
-  const category =
-    product["Category"] || "Snack";
-
-  card.setAttribute(
-    "data-category",
-    String(category).toLowerCase()
-  );
-
   const productId =
     product["Product ID"] || "";
 
   const productName =
     product["Product Name"] ||
     "Organic Snack";
+
+  const category =
+    product["Category"] ||
+    "Snack";
 
   const imageUrl =
     product["Image URL"] ||
@@ -388,20 +383,15 @@ function createProductCard(
     "";
 
   const price =
-    product["Price"] || 0;
+    Number(product["Price"]) || 0;
 
-  const shelfLife =
-    product["Shelf Life"] ||
-    "Please check the product label.";
-
-  const storage =
-    product["Storage"] ||
-    "Please check the product label.";
+  const stock =
+    Number(product["Stock"]) || 0;
 
   const availability =
     product["Availability"] ||
     getAvailability(
-      product["Stock"],
+      stock,
       product["Special Order"]
     );
 
@@ -410,10 +400,18 @@ function createProductCard(
       product["Special Order"] || ""
     ).toLowerCase() === "yes";
 
+  const unavailable =
+    stock <= 0;
+
   const availabilityClass =
     getAvailabilityClass(
       availability
     );
+
+  card.setAttribute(
+    "data-category",
+    String(category).toLowerCase()
+  );
 
   const detailedInformation =
     compactCard
@@ -433,17 +431,11 @@ function createProductCard(
           <strong>Preparation:</strong>
           ${escapeHTML(preparation)}
         </p>
-
-        <p>
-          <strong>Shelf Life:</strong>
-          ${escapeHTML(shelfLife)}
-        </p>
-
-        <p>
-          <strong>Storage:</strong>
-          ${escapeHTML(storage)}
-        </p>
       `;
+
+  const productUrl =
+    "product.html?id=" +
+    encodeURIComponent(productId);
 
   card.innerHTML = `
     <img
@@ -484,12 +476,14 @@ function createProductCard(
         </span>
 
         <strong>
-          ₹${escapeHTML(String(price))}
+          ₹${formatMoney(price)}
         </strong>
 
       </div>
 
-      <span class="availability ${availabilityClass}">
+      <span
+        class="availability ${availabilityClass}"
+      >
         ${escapeHTML(availability)}
       </span>
 
@@ -503,30 +497,25 @@ function createProductCard(
           : ""
       }
 
-    <div class="product-card-actions">
+      <div class="product-card-actions">
 
-  <a
-    class="details-button"
-    href="product.html?id=${encodeURIComponent(productId)}"
-  >
-    ${compactCard ? "View Product" : "View Information"}
-  </a>
+        <a
+          class="details-button"
+          href="${escapeAttribute(productUrl)}"
+        >
+          ${compactCard ? "View Product" : "View Information"}
+        </a>
 
-  <button
-    class="add-to-cart-button"
-    type="button"
-    data-action="add-to-cart"
-    data-product-id="${escapeAttribute(productId)}"
-    ${isProductUnavailable(product) ? "disabled" : ""}
-  >
-    ${
-      isProductUnavailable(product)
-        ? "Unavailable"
-        : "Add to Cart"
-    }
-  </button>
+        <button
+          class="add-to-cart-button"
+          type="button"
+          data-action="add-to-cart"
+          ${unavailable ? "disabled" : ""}
+        >
+          ${unavailable ? "Unavailable" : "Add to Cart"}
+        </button>
 
-</div>
+      </div>
 
     </div>
   `;
@@ -546,7 +535,20 @@ function createProductCard(
     );
   }
 
-  
+  const addToCartButton =
+    card.querySelector(
+      '[data-action="add-to-cart"]'
+    );
+
+  if (addToCartButton) {
+    addToCartButton.addEventListener(
+      "click",
+      function() {
+        addProductToCart(product);
+      }
+    );
+  }
+
   return card;
 }
 
