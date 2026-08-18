@@ -2133,3 +2133,290 @@ button {
     margin-left: 0;
   }
 }
+/* ==================================================
+   STAGE 12 - CHECKOUT FORM DESIGN
+================================================== */
+
+.checkout-page {
+  max-width: 1280px;
+  min-height: 70vh;
+  margin: 0 auto;
+  padding: 45px 24px 90px;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  align-items: start;
+  gap: 28px;
+}
+
+.checkout-form-section,
+.checkout-summary {
+  padding: 30px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-small);
+}
+
+.checkout-form-section h2,
+.checkout-summary h2 {
+  margin: 0 0 25px;
+  padding-bottom: 16px;
+  color: var(--green-dark);
+  border-bottom: 2px solid var(--green-light);
+  font-size: 1.5rem;
+}
+
+.checkout-summary {
+  position: sticky;
+  top: 100px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(255, 214, 107, 0.25),
+      transparent 35%
+    ),
+    var(--white);
+  box-shadow: var(--shadow-large);
+}
+
+.checkout-form-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  color: var(--green-dark);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.optional-label {
+  margin-left: 5px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 13px 15px;
+  color: var(--text);
+  background: #fbfffc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input {
+  min-height: 48px;
+}
+
+.form-group textarea {
+  min-height: 105px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  background: var(--white);
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px rgba(33, 134, 83, 0.12);
+}
+
+.form-group input:invalid:not(:placeholder-shown),
+.form-group textarea:invalid:not(:placeholder-shown) {
+  border-color: #dc857c;
+}
+
+.checkout-submit-button {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 8px;
+  border: 0;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.checkout-submit-button:hover {
+  transform: translateY(-2px);
+}
+
+.checkout-submit-button:disabled {
+  color: #777;
+  background: #e4e4e4;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.checkout-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.checkout-item {
+  display: grid;
+  grid-template-columns: 65px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: var(--green-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+}
+
+.checkout-item-image {
+  width: 65px;
+  height: 60px;
+  object-fit: cover;
+  background: var(--green-light);
+  border-radius: var(--radius-small);
+}
+
+.checkout-item-info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.checkout-item-info strong {
+  overflow: hidden;
+  color: var(--green-dark);
+  font-size: 0.88rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+}
+
+.checkout-item-info span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.checkout-summary .summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 13px 0;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+
+.checkout-summary .summary-row strong {
+  color: var(--green-dark);
+}
+
+.checkout-summary .summary-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 18px 0 20px;
+  padding-top: 16px;
+  color: var(--green-dark);
+  border-top: 2px solid var(--green);
+  font-weight: 900;
+}
+
+.checkout-summary .summary-total strong {
+  font-size: 1.45rem;
+}
+
+.checkout-summary .cart-note {
+  margin: 15px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+#checkout-message {
+  min-height: 28px;
+  margin: -10px 0 20px;
+  padding: 10px 12px;
+  color: var(--green-dark);
+  background: var(--green-soft);
+  border-radius: var(--radius-small);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+#checkout-message:empty {
+  display: none;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-summary {
+    position: relative;
+    top: auto;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 620px) {
+  .checkout-page {
+    padding: 30px 15px 65px;
+  }
+
+  .checkout-form-section,
+  .checkout-summary {
+    padding: 21px;
+    border-radius: var(--radius-medium);
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .checkout-heading h1,
+  .cart-heading h1 {
+    font-size: 2.5rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px;
+  }
+
+  .checkout-item {
+    grid-template-columns: 58px minmax(0, 1fr);
+  }
+
+  .checkout-item-image {
+    width: 58px;
+    height: 56px;
+  }
+}
