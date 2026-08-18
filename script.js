@@ -385,17 +385,20 @@ function createProductCard(
     "";
 
   const price =
-    Number(product["Price"]) || 0;
+  Number(product["Price"]) || 0;
 
-  const stock =
-    Number(product["Stock"]) || 0;
+const stock =
+  Number(product["Stock"]) || 0;
 
-  const availability =
-    product["Availability"] ||
-    getAvailability(
-      stock,
-      product["Special Order"]
-    );
+const unavailable =
+  stock <= 0;
+
+const availability =
+  product["Availability"] ||
+  getAvailability(
+    stock,
+    product["Special Order"]
+  );
 
   const specialOrder =
     String(
