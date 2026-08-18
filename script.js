@@ -101,6 +101,8 @@ document.addEventListener(
     setupMenu();
     setupProductFilters();
 
+        loadHomepageCartCount();
+
     loadProducts();
     loadArticles();
     loadVideos();
