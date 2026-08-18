@@ -405,8 +405,7 @@ const availability =
       product["Special Order"] || ""
     ).toLowerCase() === "yes";
 
-  const unavailable =
-    stock <= 0;
+
 
   const availabilityClass =
     getAvailabilityClass(
