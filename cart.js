@@ -159,16 +159,24 @@ function setupCartEvents() {
     );
   }
 
-  if (checkoutButton) {
-    checkoutButton.addEventListener(
-      "click",
-      function() {
+ if (checkoutButton) {
+  checkoutButton.addEventListener(
+    "click",
+    function() {
+      const cart = getCart();
+
+      if (!cart || cart.length === 0) {
         showCartMessage(
-          "Checkout will be connected in the next stage."
+          "Your cart is empty. Please add a product first."
         );
+
+        return;
       }
-    );
-  }
+
+      window.location.href = "checkout.html";
+    }
+  );
+}
 
   if (cartItemsContainer) {
     cartItemsContainer.addEventListener(
