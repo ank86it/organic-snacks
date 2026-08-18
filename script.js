@@ -503,12 +503,30 @@ function createProductCard(
           : ""
       }
 
-     <a
-  class="details-button"
-  href="product.html?id=${encodeURIComponent(productId)}"
->
-  ${compactCard ? "View Product" : "View Information"}
-</a>
+    <div class="product-card-actions">
+
+  <a
+    class="details-button"
+    href="product.html?id=${encodeURIComponent(productId)}"
+  >
+    ${compactCard ? "View Product" : "View Information"}
+  </a>
+
+  <button
+    class="add-to-cart-button"
+    type="button"
+    data-action="add-to-cart"
+    data-product-id="${escapeAttribute(productId)}"
+    ${isProductUnavailable(product) ? "disabled" : ""}
+  >
+    ${
+      isProductUnavailable(product)
+        ? "Unavailable"
+        : "Add to Cart"
+    }
+  </button>
+
+</div>
 
     </div>
   `;
