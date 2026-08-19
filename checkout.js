@@ -1,19 +1,27 @@
 /*
   ORGANIC SNACKS STORE
-  Stage 12 - Checkout Form
+  STAGE 13 - CHECKOUT AND PAYMENT METHOD
 
-  This stage:
-  - Loads cart items
-  - Displays checkout summary
-  - Displays cart count
-  - Validates customer details
-  - Saves checkout details temporarily
-  - Does not yet create an order or process payment
+  Current functions:
+  - Load cart from localStorage
+  - Display checkout items
+  - Calculate subtotal and total
+  - Validate customer details
+  - Select payment method
+  - Show payment instructions
+  - Save checkout data temporarily
+
+  Not included yet:
+  - Payment verification
+  - Google Sheets order creation
+  - Order ID generation
+  - Stock reduction
+  - Email notification
 */
 
 
 /* ==================================================
-   1. CONFIGURATION
+   1. STORAGE KEYS
 ================================================== */
 
 const CHECKOUT_CART_KEY =
@@ -34,6 +42,11 @@ let checkoutCartCount;
 let checkoutQuantity;
 let checkoutSubtotal;
 let checkoutTotal;
+
+let paymentOptions;
+let upiPaymentBox;
+let paymentLinkBox;
+let codPaymentBox;
 
 
 /* ==================================================
@@ -78,8 +91,29 @@ document.addEventListener(
         "checkout-total"
       );
 
+    paymentOptions =
+      document.querySelectorAll(
+        'input[name="paymentMethod"]'
+      );
+
+    upiPaymentBox =
+      document.getElementById(
+        "upi-payment-box"
+      );
+
+    paymentLinkBox =
+      document.getElementById(
+        "payment-link-box"
+      );
+
+    codPaymentBox =
+      document.getElementById(
+        "cod-payment-box"
+      );
+
     setupCheckoutMenu();
     setupCheckoutForm();
+    setupPaymentOptions();
     renderCheckout();
   }
 );
@@ -140,7 +174,7 @@ function setupCheckoutMenu() {
 
 
 /* ==================================================
-   5. CHECKOUT FORM EVENT
+   5. CHECKOUT FORM SETUP
 ================================================== */
 
 function setupCheckoutForm() {
@@ -156,7 +190,61 @@ function setupCheckoutForm() {
 
 
 /* ==================================================
-   6. READ CART
+   6. PAYMENT OPTION SETUP
+================================================== */
+
+function setupPaymentOptions() {
+  if (
+    !paymentOptions ||
+    paymentOptions.length === 0
+  ) {
+    return;
+  }
+
+  paymentOptions.forEach(
+    function(option) {
+      option.addEventListener(
+        "change",
+        function() {
+          updatePaymentDisplay(
+            option.value
+          );
+
+          showCheckoutMessage(
+            "Payment method selected: " +
+            option.value
+          );
+        }
+      );
+    }
+  );
+}
+
+
+/* ==================================================
+   7. PAYMENT DISPLAY
+================================================== */
+
+function updatePaymentDisplay(method) {
+  if (upiPaymentBox) {
+    upiPaymentBox.hidden =
+      method !== "UPI";
+  }
+
+  if (paymentLinkBox) {
+    paymentLinkBox.hidden =
+      method !== "Payment Link";
+  }
+
+  if (codPaymentBox) {
+    codPaymentBox.hidden =
+      method !== "Cash on Delivery";
+  }
+}
+
+
+/* ==================================================
+   8. READ CART
 ================================================== */
 
 function getCheckoutCart() {
@@ -189,7 +277,7 @@ function getCheckoutCart() {
 
 
 /* ==================================================
-   7. DISPLAY CHECKOUT
+   9. DISPLAY CHECKOUT
 ================================================== */
 
 function renderCheckout() {
@@ -209,6 +297,31 @@ function renderCheckout() {
     disableCheckoutForm();
     updateCheckoutSummary([]);
 
+    if (checkoutItemsContainer) {
+      checkoutItemsContainer.innerHTML = `
+        <div class="empty-cart">
+          <div class="empty-cart-icon">
+            🛒
+          </div>
+
+          <h3>
+            Your cart is empty
+          </h3>
+
+          <p>
+            Please add a product before checkout.
+          </p>
+
+          <a
+            class="primary-button"
+            href="index.html#products"
+          >
+            Browse Products
+          </a>
+        </div>
+      `;
+    }
+
     return;
   }
 
@@ -223,7 +336,7 @@ function renderCheckout() {
 
 
 /* ==================================================
-   8. DISPLAY CHECKOUT ITEMS
+   10. DISPLAY CHECKOUT ITEMS
 ================================================== */
 
 function renderCheckoutItems(cart) {
@@ -234,77 +347,81 @@ function renderCheckoutItems(cart) {
   checkoutItemsContainer.innerHTML =
     "";
 
-  cart.forEach(function(item) {
-    const itemElement =
-      document.createElement("div");
+  cart.forEach(
+    function(item) {
+      const itemElement =
+        document.createElement("div");
 
-    itemElement.className =
-      "checkout-item";
+      itemElement.className =
+        "checkout-item";
 
-    const productName =
-      item.productName ||
-      "Organic Snack";
+      const productName =
+        item.productName ||
+        "Organic Snack";
 
-    const quantity =
-      Number(item.quantity) || 0;
+      const quantity =
+        Number(item.quantity) || 0;
 
-    const price =
-      Number(item.price) || 0;
+      const price =
+        Number(item.price) || 0;
 
-    const imageUrl =
-      item.imageUrl ||
-      "https://placehold.co/180x140/e6f8ed/114b35?text=Snack";
+      const imageUrl =
+        item.imageUrl ||
+        "https://placehold.co/180x140/e6f8ed/114b35?text=Snack";
 
-    const itemTotal =
-      price * quantity;
+      const itemTotal =
+        price * quantity;
 
-    itemElement.innerHTML = `
-      <img
-        class="checkout-item-image"
-        src="${escapeAttribute(imageUrl)}"
-        alt="${escapeAttribute(productName)}"
-        loading="lazy"
-      >
+      itemElement.innerHTML = `
+        <img
+          class="checkout-item-image"
+          src="${escapeAttribute(imageUrl)}"
+          alt="${escapeAttribute(productName)}"
+          loading="lazy"
+        >
 
-      <div class="checkout-item-info">
-        <strong>
-          ${escapeHTML(productName)}
-        </strong>
+        <div class="checkout-item-info">
 
-        <span>
-          Quantity: ${quantity}
-        </span>
+          <strong>
+            ${escapeHTML(productName)}
+          </strong>
 
-        <span>
-          ₹${formatMoney(itemTotal)}
-        </span>
-      </div>
-    `;
+          <span>
+            Quantity: ${quantity}
+          </span>
 
-    const image =
-      itemElement.querySelector(
-        ".checkout-item-image"
-      );
+          <span>
+            ₹${formatMoney(itemTotal)}
+          </span>
 
-    if (image) {
-      image.addEventListener(
-        "error",
-        function() {
-          image.src =
-            "https://placehold.co/180x140/e6f8ed/114b35?text=Snack";
-        }
+        </div>
+      `;
+
+      const image =
+        itemElement.querySelector(
+          ".checkout-item-image"
+        );
+
+      if (image) {
+        image.addEventListener(
+          "error",
+          function() {
+            image.src =
+              "https://placehold.co/180x140/e6f8ed/114b35?text=Snack";
+          }
+        );
+      }
+
+      checkoutItemsContainer.appendChild(
+        itemElement
       );
     }
-
-    checkoutItemsContainer.appendChild(
-      itemElement
-    );
-  });
+  );
 }
 
 
 /* ==================================================
-   9. UPDATE SUMMARY
+   11. UPDATE CHECKOUT SUMMARY
 ================================================== */
 
 function updateCheckoutSummary(cart) {
@@ -314,19 +431,21 @@ function updateCheckoutSummary(cart) {
   let subtotal =
     0;
 
-  cart.forEach(function(item) {
-    const quantity =
-      Number(item.quantity) || 0;
+  cart.forEach(
+    function(item) {
+      const quantity =
+        Number(item.quantity) || 0;
 
-    const price =
-      Number(item.price) || 0;
+      const price =
+        Number(item.price) || 0;
 
-    totalQuantity +=
-      quantity;
+      totalQuantity +=
+        quantity;
 
-    subtotal +=
-      price * quantity;
-  });
+      subtotal +=
+        price * quantity;
+    }
+  );
 
   if (checkoutQuantity) {
     checkoutQuantity.textContent =
@@ -346,7 +465,7 @@ function updateCheckoutSummary(cart) {
 
 
 /* ==================================================
-   10. UPDATE CART COUNT
+   12. UPDATE CART COUNT
 ================================================== */
 
 function updateCheckoutCartCount(cart) {
@@ -355,13 +474,13 @@ function updateCheckoutCartCount(cart) {
   }
 
   const totalQuantity =
-    cart.reduce(function(
-      total,
-      item
-    ) {
-      return total +
-        (Number(item.quantity) || 0);
-    }, 0);
+    cart.reduce(
+      function(total, item) {
+        return total +
+          (Number(item.quantity) || 0);
+      },
+      0
+    );
 
   checkoutCartCount.textContent =
     totalQuantity;
@@ -369,7 +488,7 @@ function updateCheckoutCartCount(cart) {
 
 
 /* ==================================================
-   11. HANDLE FORM SUBMISSION
+   13. HANDLE CHECKOUT SUBMISSION
 ================================================== */
 
 function handleCheckoutSubmit(event) {
@@ -383,7 +502,7 @@ function handleCheckoutSubmit(event) {
     cart.length === 0
   ) {
     showCheckoutMessage(
-      "Your cart is empty."
+      "Your cart is empty. Please add a product first."
     );
 
     return;
@@ -431,11 +550,21 @@ function handleCheckoutSubmit(event) {
     notes:
       String(
         formData.get("notes") || ""
+      ).trim(),
+
+    paymentMethod:
+      String(
+        formData.get("paymentMethod") || ""
+      ).trim(),
+
+    paymentReference:
+      String(
+        formData.get("paymentReference") || ""
       ).trim()
   };
 
   const validationError =
-    validateCustomerDetails(
+    validateCheckoutDetails(
       customerDetails
     );
 
@@ -447,32 +576,33 @@ function handleCheckoutSubmit(event) {
     return;
   }
 
-  /*
-    Temporarily save checkout details.
-    The next stage will send these details
-    to Apps Script and create the order.
-  */
+  const checkoutData = {
+    customer: customerDetails,
+    cart: cart,
+    savedAt: new Date().toISOString()
+  };
 
   sessionStorage.setItem(
     CHECKOUT_DETAILS_KEY,
-    JSON.stringify({
-      customer: customerDetails,
-      cart: cart,
-      savedAt: new Date().toISOString()
-    })
+    JSON.stringify(checkoutData)
   );
 
   showCheckoutMessage(
-    "Your details are ready. Payment and order confirmation will be added next."
+    "Details saved. Payment and final order confirmation will be added in the next stage."
+  );
+
+  console.log(
+    "Temporary checkout data:",
+    checkoutData
   );
 }
 
 
 /* ==================================================
-   12. VALIDATE CUSTOMER DETAILS
+   14. VALIDATE CHECKOUT DETAILS
 ================================================== */
 
-function validateCustomerDetails(details) {
+function validateCheckoutDetails(details) {
   if (!details.customerName) {
     return "Please enter your full name.";
   }
@@ -514,12 +644,22 @@ function validateCustomerDetails(details) {
     return "Please enter a valid email address.";
   }
 
+  if (!details.paymentMethod) {
+    return "Please select a payment method.";
+  }
+
+  /*
+    The payment reference is not required yet
+    because payment verification is implemented
+    in a later stage.
+  */
+
   return "";
 }
 
 
 /* ==================================================
-   13. EMAIL VALIDATION
+   15. EMAIL VALIDATION
 ================================================== */
 
 function isValidEmail(email) {
@@ -529,7 +669,7 @@ function isValidEmail(email) {
 
 
 /* ==================================================
-   14. DISABLE AND ENABLE FORM
+   16. DISABLE FORM
 ================================================== */
 
 function disableCheckoutForm() {
@@ -539,14 +679,20 @@ function disableCheckoutForm() {
 
   const controls =
     checkoutForm.querySelectorAll(
-      "input, textarea, button"
+      "input, textarea, select, button"
     );
 
-  controls.forEach(function(control) {
-    control.disabled = true;
-  });
+  controls.forEach(
+    function(control) {
+      control.disabled = true;
+    }
+  );
 }
 
+
+/* ==================================================
+   17. ENABLE FORM
+================================================== */
 
 function enableCheckoutForm() {
   if (!checkoutForm) {
@@ -555,17 +701,19 @@ function enableCheckoutForm() {
 
   const controls =
     checkoutForm.querySelectorAll(
-      "input, textarea, button"
+      "input, textarea, select, button"
     );
 
-  controls.forEach(function(control) {
-    control.disabled = false;
-  });
+  controls.forEach(
+    function(control) {
+      control.disabled = false;
+    }
+  );
 }
 
 
 /* ==================================================
-   15. DISPLAY MESSAGE
+   18. DISPLAY CHECKOUT MESSAGE
 ================================================== */
 
 function showCheckoutMessage(message) {
@@ -577,7 +725,7 @@ function showCheckoutMessage(message) {
 
 
 /* ==================================================
-   16. MONEY FORMAT
+   19. MONEY FORMAT
 ================================================== */
 
 function formatMoney(value) {
@@ -593,7 +741,7 @@ function formatMoney(value) {
 
 
 /* ==================================================
-   17. HTML SAFETY
+   20. HTML SAFETY
 ================================================== */
 
 function escapeHTML(value) {
