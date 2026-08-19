@@ -2420,3 +2420,136 @@ button {
     height: 56px;
   }
 }
+/* ==================================================
+   STAGE 13 - PAYMENT METHOD DESIGN
+================================================== */
+
+.payment-method-section {
+  margin-top: 28px;
+  padding: 24px;
+  background: var(--green-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+}
+
+.payment-method-section h2 {
+  margin: 0 0 10px;
+  color: var(--green-dark);
+  border: 0;
+  font-size: 1.45rem;
+}
+
+.payment-introduction {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.payment-options {
+  display: grid;
+  gap: 12px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-small);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.payment-option:hover {
+  border-color: var(--green);
+  box-shadow: var(--shadow-small);
+}
+
+.payment-option:has(input:checked) {
+  background: var(--green-light);
+  border-color: var(--green);
+}
+
+.payment-option input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--green);
+}
+
+.payment-option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.payment-option-content strong {
+  color: var(--green-dark);
+}
+
+.payment-option-content small {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.payment-instructions {
+  margin-top: 18px;
+  padding: 20px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+}
+
+.payment-instructions h3 {
+  margin: 0 0 8px;
+  color: var(--green-dark);
+}
+
+.payment-instructions p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.upi-id {
+  display: inline-block;
+  padding: 10px 15px;
+  color: var(--green-dark) !important;
+  background: var(--yellow-light);
+  border-radius: 20px;
+  font-weight: 900;
+}
+
+.upi-qr-placeholder {
+  display: grid;
+  min-height: 160px;
+  margin: 18px 0;
+  padding: 20px;
+  place-items: center;
+  color: var(--green-dark);
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #ffffff,
+      #ffffff 8px,
+      #f0f8f2 8px,
+      #f0f8f2 16px
+    );
+  border: 2px dashed var(--green);
+  border-radius: var(--radius-small);
+  text-align: center;
+}
+
+.upi-qr-placeholder span {
+  font-size: 3.5rem;
+  font-weight: 900;
+}
+
+.upi-qr-placeholder p {
+  margin: 5px 0 0;
+}
+
+.payment-method-section .form-group {
+  margin-bottom: 0;
+}
