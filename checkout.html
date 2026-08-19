@@ -261,12 +261,164 @@
             ></textarea>
           </div>
 
+<section
+  class="payment-method-section"
+  aria-labelledby="payment-method-heading"
+>
 
+  <h2 id="payment-method-heading">
+    Payment Method
+  </h2>
+
+  <p class="payment-introduction">
+    Select your preferred payment method. Final payment confirmation
+    will be completed before your order is accepted.
+  </p>
+
+  <div class="payment-options">
+
+    <label class="payment-option">
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="UPI"
+        required
+      >
+
+      <span class="payment-option-content">
+        <strong>UPI Payment</strong>
+        <small>
+          Pay using your UPI application.
+        </small>
+      </span>
+    </label>
+
+
+    <label class="payment-option">
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="Payment Link"
+      >
+
+      <span class="payment-option-content">
+        <strong>Payment Link</strong>
+        <small>
+          Receive a secure payment link after submitting details.
+        </small>
+      </span>
+    </label>
+
+
+    <label class="payment-option">
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="Cash on Delivery"
+      >
+
+      <span class="payment-option-content">
+        <strong>Cash on Delivery</strong>
+        <small>
+          Available only in selected delivery areas.
+        </small>
+      </span>
+    </label>
+
+  </div>
+
+
+  <div
+    id="upi-payment-box"
+    class="payment-instructions"
+    hidden
+  >
+
+    <h3>
+      UPI Payment Instructions
+    </h3>
+
+    <p>
+      Send the amount to the UPI ID shown below:
+    </p>
+
+    <p class="upi-id">
+      yourbusiness@upi
+    </p>
+
+    <p>
+      Replace the sample UPI ID with your real business UPI ID.
+    </p>
+
+    <div class="upi-qr-placeholder">
+      <span>▣</span>
+      <p>
+        UPI QR code will be added here.
+      </p>
+    </div>
+
+    <div class="form-group">
+      <label for="payment-reference">
+        Payment Reference Number
+      </label>
+
+      <input
+        id="payment-reference"
+        name="paymentReference"
+        type="text"
+        placeholder="Enter UPI transaction reference"
+      >
+    </div>
+
+  </div>
+
+
+  <div
+    id="payment-link-box"
+    class="payment-instructions"
+    hidden
+  >
+
+    <h3>
+      Payment Link
+    </h3>
+
+    <p>
+      After reviewing your details, a secure payment link will be sent to
+      your phone or email.
+    </p>
+
+    <p>
+      Payment link status:
+      <strong>To be generated</strong>
+    </p>
+
+  </div>
+
+
+  <div
+    id="cod-payment-box"
+    class="payment-instructions"
+    hidden
+  >
+
+    <h3>
+      Cash on Delivery
+    </h3>
+
+    <p>
+      Cash on Delivery may be available only in selected delivery areas.
+      The order will require admin confirmation.
+    </p>
+
+  </div>
+
+</section>
           <button
             class="primary-button checkout-submit-button"
             type="submit"
           >
-            Continue
+            Review Payment and Order
           </button>
 
         </form>
