@@ -1,27 +1,20 @@
 /*
   ORGANIC SNACKS STORE
-  STAGE 13 - CHECKOUT AND PAYMENT METHOD
+  STAGE 14 - ORDER SUBMISSION
 
-  Current functions:
-  - Load cart from localStorage
-  - Display checkout items
-  - Calculate subtotal and total
-  - Validate customer details
-  - Select payment method
-  - Show payment instructions
-  - Save checkout data temporarily
-
-  Not included yet:
-  - Payment verification
-  - Google Sheets order creation
-  - Order ID generation
-  - Stock reduction
-  - Email notification
+  This file:
+  - Loads cart data
+  - Displays checkout products
+  - Validates customer details
+  - Displays payment instructions
+  - Sends order data to Apps Script
+  - Clears cart after successful order
+  - Displays the generated Order ID
 */
 
 
 /* ==================================================
-   1. STORAGE KEYS
+   1. CONFIGURATION
 ================================================== */
 
 const CHECKOUT_CART_KEY =
@@ -29,6 +22,9 @@ const CHECKOUT_CART_KEY =
 
 const CHECKOUT_DETAILS_KEY =
   "organicSnacksCheckoutDetails";
+
+const CHECKOUT_API_URL =
+  "https://script.google.com/macros/s/AKfycbwE0ce7dStvIRT8xvk_qtrzyEpCPJyYIHPy0BQciRO1J_KHuZ8CQ5wlr_ifqDfN5eqp/exec";
 
 
 /* ==================================================
@@ -112,8 +108,8 @@ document.addEventListener(
       );
 
     setupCheckoutMenu();
-    setupCheckoutForm();
     setupPaymentOptions();
+    setupCheckoutForm();
     renderCheckout();
   }
 );
@@ -174,23 +170,7 @@ function setupCheckoutMenu() {
 
 
 /* ==================================================
-   5. CHECKOUT FORM SETUP
-================================================== */
-
-function setupCheckoutForm() {
-  if (!checkoutForm) {
-    return;
-  }
-
-  checkoutForm.addEventListener(
-    "submit",
-    handleCheckoutSubmit
-  );
-}
-
-
-/* ==================================================
-   6. PAYMENT OPTION SETUP
+   5. PAYMENT OPTIONS
 ================================================== */
 
 function setupPaymentOptions() {
@@ -221,10 +201,6 @@ function setupPaymentOptions() {
 }
 
 
-/* ==================================================
-   7. PAYMENT DISPLAY
-================================================== */
-
 function updatePaymentDisplay(method) {
   if (upiPaymentBox) {
     upiPaymentBox.hidden =
@@ -244,7 +220,23 @@ function updatePaymentDisplay(method) {
 
 
 /* ==================================================
-   8. READ CART
+   6. FORM SETUP
+================================================== */
+
+function setupCheckoutForm() {
+  if (!checkoutForm) {
+    return;
+  }
+
+  checkoutForm.addEventListener(
+    "submit",
+    handleCheckoutSubmit
+  );
+}
+
+
+/* ==================================================
+   7. READ CART
 ================================================== */
 
 function getCheckoutCart() {
@@ -267,7 +259,7 @@ function getCheckoutCart() {
 
   } catch (error) {
     console.error(
-      "Could not read checkout cart:",
+      "Could not read cart:",
       error
     );
 
@@ -277,7 +269,7 @@ function getCheckoutCart() {
 
 
 /* ==================================================
-   9. DISPLAY CHECKOUT
+   8. DISPLAY CHECKOUT
 ================================================== */
 
 function renderCheckout() {
@@ -336,7 +328,7 @@ function renderCheckout() {
 
 
 /* ==================================================
-   10. DISPLAY CHECKOUT ITEMS
+   9. DISPLAY CHECKOUT ITEMS
 ================================================== */
 
 function renderCheckoutItems(cart) {
@@ -381,7 +373,6 @@ function renderCheckoutItems(cart) {
         >
 
         <div class="checkout-item-info">
-
           <strong>
             ${escapeHTML(productName)}
           </strong>
@@ -393,7 +384,6 @@ function renderCheckoutItems(cart) {
           <span>
             ₹${formatMoney(itemTotal)}
           </span>
-
         </div>
       `;
 
@@ -421,7 +411,7 @@ function renderCheckoutItems(cart) {
 
 
 /* ==================================================
-   11. UPDATE CHECKOUT SUMMARY
+   10. UPDATE SUMMARY
 ================================================== */
 
 function updateCheckoutSummary(cart) {
@@ -465,7 +455,7 @@ function updateCheckoutSummary(cart) {
 
 
 /* ==================================================
-   12. UPDATE CART COUNT
+   11. UPDATE CART COUNT
 ================================================== */
 
 function updateCheckoutCartCount(cart) {
@@ -488,10 +478,10 @@ function updateCheckoutCartCount(cart) {
 
 
 /* ==================================================
-   13. HANDLE CHECKOUT SUBMISSION
+   12. SUBMIT ORDER
 ================================================== */
 
-function handleCheckoutSubmit(event) {
+async function handleCheckoutSubmit(event) {
   event.preventDefault();
 
   const cart =
@@ -511,56 +501,89 @@ function handleCheckoutSubmit(event) {
   const formData =
     new FormData(checkoutForm);
 
+  const paymentMethod =
+    String(
+      formData.get("paymentMethod") || ""
+    ).trim();
+
+  const paymentReference =
+    String(
+      formData.get("paymentReference") || ""
+    ).trim();
+
+  const customerName =
+    String(
+      formData.get("customerName") || ""
+    ).trim();
+
+  const phone =
+    String(
+      formData.get("phone") || ""
+    ).trim();
+
+  const email =
+    String(
+      formData.get("email") || ""
+    ).trim();
+
+  const address =
+    String(
+      formData.get("address") || ""
+    ).trim();
+
+  const city =
+    String(
+      formData.get("city") || ""
+    ).trim();
+
+  const state =
+    String(
+      formData.get("state") || ""
+    ).trim();
+
+  const postalCode =
+    String(
+      formData.get("postalCode") || ""
+    ).trim();
+
+  const notes =
+    String(
+      formData.get("notes") || ""
+    ).trim();
+
+  const completeAddress =
+    [
+      address,
+      city,
+      state,
+      postalCode
+    ]
+      .filter(function(value) {
+        return value !== "";
+      })
+      .join(", ");
+
   const customerDetails = {
     customerName:
-      String(
-        formData.get("customerName") || ""
-      ).trim(),
+      customerName,
 
     phone:
-      String(
-        formData.get("phone") || ""
-      ).trim(),
+      phone,
 
     email:
-      String(
-        formData.get("email") || ""
-      ).trim(),
+      email,
 
     address:
-      String(
-        formData.get("address") || ""
-      ).trim(),
-
-    city:
-      String(
-        formData.get("city") || ""
-      ).trim(),
-
-    state:
-      String(
-        formData.get("state") || ""
-      ).trim(),
-
-    postalCode:
-      String(
-        formData.get("postalCode") || ""
-      ).trim(),
-
-    notes:
-      String(
-        formData.get("notes") || ""
-      ).trim(),
+      completeAddress,
 
     paymentMethod:
-      String(
-        formData.get("paymentMethod") || ""
-      ).trim(),
+      paymentMethod,
 
     paymentReference:
-      String(
-        formData.get("paymentReference") || ""
-      ).trim()
+      paymentReference,
+
+    notes:
+      notes
   };
 
   const validationError =
@@ -576,30 +599,164 @@ function handleCheckoutSubmit(event) {
     return;
   }
 
-  const checkoutData = {
-    customer: customerDetails,
-    cart: cart,
-    savedAt: new Date().toISOString()
+  const orderItems =
+    cart.map(function(item) {
+      return {
+        productId:
+          item.productId,
+
+        quantity:
+          Number(item.quantity) || 0
+      };
+    });
+
+  const orderData = {
+    action:
+      "create-order",
+
+    customerName:
+      customerDetails.customerName,
+
+    phone:
+      customerDetails.phone,
+
+    email:
+      customerDetails.email,
+
+    address:
+      customerDetails.address,
+
+    paymentMethod:
+      customerDetails.paymentMethod,
+
+    paymentReference:
+      customerDetails.paymentReference,
+
+    notes:
+      customerDetails.notes,
+
+    items:
+      orderItems
   };
 
-  sessionStorage.setItem(
-    CHECKOUT_DETAILS_KEY,
-    JSON.stringify(checkoutData)
-  );
+  const submitButton =
+    checkoutForm.querySelector(
+      ".checkout-submit-button"
+    );
+
+  if (submitButton) {
+    submitButton.disabled =
+      true;
+
+    submitButton.textContent =
+      "Submitting Order...";
+  }
 
   showCheckoutMessage(
-    "Details saved. Payment and final order confirmation will be added in the next stage."
+    "Checking stock and submitting your order..."
   );
 
-  console.log(
-    "Temporary checkout data:",
-    checkoutData
-  );
+  try {
+    const response =
+      await fetch(
+        CHECKOUT_API_URL,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "text/plain;charset=utf-8"
+          },
+
+          body:
+            JSON.stringify(orderData)
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        "The order service returned an error."
+      );
+    }
+
+    const result =
+      await response.json();
+
+    if (
+      !result ||
+      result.success !== true
+    ) {
+      throw new Error(
+        result && result.message
+          ? result.message
+          : "Order could not be created."
+      );
+    }
+
+    const savedCheckoutData = {
+      customer:
+        customerDetails,
+
+      cart:
+        cart,
+
+      orderId:
+        result.orderId || "",
+
+      totalAmount:
+        result.totalAmount || 0,
+
+      paymentStatus:
+        result.paymentStatus ||
+        "Payment Pending",
+
+      orderStatus:
+        result.orderStatus ||
+        "Order Placed",
+
+      savedAt:
+        new Date().toISOString()
+    };
+
+    sessionStorage.setItem(
+      CHECKOUT_DETAILS_KEY,
+      JSON.stringify(
+        savedCheckoutData
+      )
+    );
+
+    localStorage.removeItem(
+      CHECKOUT_CART_KEY
+    );
+
+    showOrderSuccess(
+      result
+    );
+
+  } catch (error) {
+    console.error(
+      "Order submission error:",
+      error
+    );
+
+    showCheckoutMessage(
+      "Order submission failed: " +
+      error.message
+    );
+
+    if (submitButton) {
+      submitButton.disabled =
+        false;
+
+      submitButton.textContent =
+        "Review Payment and Order";
+    }
+  }
 }
 
 
 /* ==================================================
-   14. VALIDATE CHECKOUT DETAILS
+   13. VALIDATE CHECKOUT DETAILS
 ================================================== */
 
 function validateCheckoutDetails(details) {
@@ -625,16 +782,8 @@ function validateCheckoutDetails(details) {
     return "Please enter your delivery address.";
   }
 
-  if (!details.city) {
-    return "Please enter your city.";
-  }
-
-  if (!details.state) {
-    return "Please enter your state.";
-  }
-
-  if (!details.postalCode) {
-    return "Please enter your postal code.";
+  if (!details.paymentMethod) {
+    return "Please select a payment method.";
   }
 
   if (
@@ -644,22 +793,12 @@ function validateCheckoutDetails(details) {
     return "Please enter a valid email address.";
   }
 
-  if (!details.paymentMethod) {
-    return "Please select a payment method.";
-  }
-
-  /*
-    The payment reference is not required yet
-    because payment verification is implemented
-    in a later stage.
-  */
-
   return "";
 }
 
 
 /* ==================================================
-   15. EMAIL VALIDATION
+   14. EMAIL VALIDATION
 ================================================== */
 
 function isValidEmail(email) {
@@ -669,7 +808,87 @@ function isValidEmail(email) {
 
 
 /* ==================================================
-   16. DISABLE FORM
+   15. SUCCESS MESSAGE
+================================================== */
+
+function showOrderSuccess(result) {
+  if (!checkoutForm) {
+    return;
+  }
+
+  const orderId =
+    result.orderId || "Pending";
+
+  const totalAmount =
+    result.totalAmount || 0;
+
+  const paymentStatus =
+    result.paymentStatus ||
+    "Payment Pending";
+
+  const orderStatus =
+    result.orderStatus ||
+    "Order Placed";
+
+  checkoutForm.innerHTML = `
+    <div class="order-success-box">
+
+      <div class="order-success-icon">
+        ✓
+      </div>
+
+      <h2>
+        Order submitted successfully
+      </h2>
+
+      <p>
+        Thank you for your order.
+      </p>
+
+      <div class="order-success-details">
+
+        <p>
+          <strong>Order ID:</strong>
+          ${escapeHTML(orderId)}
+        </p>
+
+        <p>
+          <strong>Total Amount:</strong>
+          ₹${formatMoney(totalAmount)}
+        </p>
+
+        <p>
+          <strong>Payment Status:</strong>
+          ${escapeHTML(paymentStatus)}
+        </p>
+
+        <p>
+          <strong>Order Status:</strong>
+          ${escapeHTML(orderStatus)}
+        </p>
+
+      </div>
+
+      <p class="order-success-note">
+        Your payment will be verified by the store administrator.
+      </p>
+
+      <a
+        class="primary-button"
+        href="index.html"
+      >
+        Return to Home
+      </a>
+
+    </div>
+  `;
+
+  showCheckoutMessage("");
+}
+
+
+/* ==================================================
+   16. FORM STATE
 ================================================== */
 
 function disableCheckoutForm() {
@@ -684,15 +903,12 @@ function disableCheckoutForm() {
 
   controls.forEach(
     function(control) {
-      control.disabled = true;
+      control.disabled =
+        true;
     }
   );
 }
 
-
-/* ==================================================
-   17. ENABLE FORM
-================================================== */
 
 function enableCheckoutForm() {
   if (!checkoutForm) {
@@ -706,14 +922,15 @@ function enableCheckoutForm() {
 
   controls.forEach(
     function(control) {
-      control.disabled = false;
+      control.disabled =
+        false;
     }
   );
 }
 
 
 /* ==================================================
-   18. DISPLAY CHECKOUT MESSAGE
+   17. DISPLAY MESSAGE
 ================================================== */
 
 function showCheckoutMessage(message) {
@@ -725,7 +942,7 @@ function showCheckoutMessage(message) {
 
 
 /* ==================================================
-   19. MONEY FORMAT
+   18. MONEY FORMAT
 ================================================== */
 
 function formatMoney(value) {
@@ -741,7 +958,7 @@ function formatMoney(value) {
 
 
 /* ==================================================
-   20. HTML SAFETY
+   19. HTML SAFETY
 ================================================== */
 
 function escapeHTML(value) {
