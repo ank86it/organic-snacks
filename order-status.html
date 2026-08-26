@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track your organic snacks order status in real-time.">
+  <title>Track Order - Organic Snacks Store</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <nav class="navbar">
+      <a class="brand" href="index.html">
+        <span class="brand-icon">🌿</span>
+        <span>Organic Snacks</span>
+      </a>
+
+      <button id="menu-button" class="menu-button" type="button" aria-label="Open navigation menu" aria-expanded="false">
+        ☰
+      </button>
+
+      <div id="nav-links" class="nav-links">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#products">Products</a>
+        <a href="index.html#articles">Articles</a>
+        <a href="order-status.html" class="active">Track Order</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="cart.html" class="cart-nav-link">
+          Cart
+          <span id="tracking-cart-count" class="cart-count">0</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="tracking-page">
+
+    <a class="product-detail-back" href="index.html">
+      ← Back to Home
+    </a>
+
+    <div class="cart-heading">
+      <p class="eyebrow">ORDER TRACEABILITY</p>
+      <h1>Track your order status</h1>
+      <p>Enter your Order ID and Phone Number to check live order progress.</p>
+    </div>
+
+    <div class="tracking-layout">
+
+      <!-- LOOKUP FORM -->
+      <section class="tracking-search-section">
+        <h2>Order Lookup</h2>
+
+        <p id="tracking-message" class="product-message" aria-live="polite">
+          Please enter your tracking details below.
+        </p>
+
+        <form id="tracking-form" novalidate>
+          <div class="form-group">
+            <label for="tracking-order-id">Order ID</label>
+            <input 
+              id="tracking-order-id" 
+              name="orderId" 
+              type="text" 
+              placeholder="e.g. ORD-2025-123456" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="tracking-phone">Phone Number</label>
+            <input 
+              id="tracking-phone" 
+              name="phone" 
+              type="tel" 
+              placeholder="Phone number used during checkout" 
+              required
+            >
+          </div>
+
+          <button class="primary-button tracking-submit-button" type="submit">
+            Track Order Progress
+          </button>
+        </form>
+      </section>
+
+      <!-- RESULTS CONTAINER -->
+      <section id="tracking-results-section" class="tracking-results-section" hidden>
+        <h2>Order Information</h2>
+        
+        <div id="tracking-details-box" class="tracking-details-box">
+          <!-- Filled dynamically by order-status.js -->
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h2>🌿 Organic Snacks</h2>
+        <p>Simple snacks with clear information.</p>
+      </div>
+
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <a href="index.html#home">Home</a>
+        <a href="index.html#products">Products</a>
+        <a href="order-status.html">Track Order</a>
+        <a href="cart.html">Cart</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Organic Snacks Store. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="order-status.js?v=1"></script>
+</body>
+
+</html>
