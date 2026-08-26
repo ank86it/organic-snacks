@@ -2603,3 +2603,212 @@ button {
   color: var(--muted);
   font-size: 0.88rem;
 }
+/* ==================================================
+   STAGE 17 - ORDER TRACKING STYLES
+================================================== */
+
+.tracking-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 45px 24px 90px;
+}
+
+.tracking-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.tracking-search-section,
+.tracking-results-section {
+  padding: 30px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-small);
+}
+
+.tracking-search-section h2,
+.tracking-results-section h2 {
+  margin: 0 0 20px;
+  color: var(--green-dark);
+}
+
+.tracking-submit-button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* TRACKING SUMMARY CARD */
+.tracking-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tracking-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tracking-header-row h3 {
+  margin: 2px 0 4px;
+  color: var(--green-dark);
+  font-size: 1.5rem;
+}
+
+.order-date-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.status-badge {
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+/* VISUAL TIMELINE */
+.tracking-timeline-wrapper {
+  position: relative;
+  margin: 25px 0 15px;
+  padding: 0 10px;
+}
+
+.timeline-bar-bg {
+  position: absolute;
+  top: 18px;
+  left: 30px;
+  right: 30px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.timeline-bar-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.timeline-steps {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-circle {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: var(--muted);
+  background: var(--white);
+  border: 3px solid var(--border);
+  border-radius: 50%;
+  font-weight: 900;
+  font-size: 0.9rem;
+  transition: 0.3s ease;
+}
+
+.timeline-step.active .step-circle {
+  color: var(--white);
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.timeline-step span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.timeline-step.active span {
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+/* DATA GRID */
+.tracking-data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 18px;
+  background: var(--green-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+}
+
+.tracking-data-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tracking-data-item strong {
+  color: var(--green-dark);
+  font-size: 0.82rem;
+}
+
+.tracking-products-box {
+  padding: 16px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+}
+
+.tracking-products-box strong {
+  color: var(--green-dark);
+}
+
+.tracking-products-box p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.tracking-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 15px;
+  border-top: 2px solid var(--green);
+  font-size: 1.1rem;
+}
+
+.tracking-total-row strong {
+  color: var(--green-dark);
+  font-size: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .tracking-data-grid {
+    grid-template-columns: 1fr;
+  }
+  .timeline-step span {
+    font-size: 0.68rem;
+  }
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 0.78rem;
+  }
+  .timeline-bar-bg {
+    top: 14px;
+  }
+}
