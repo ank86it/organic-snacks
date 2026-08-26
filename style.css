@@ -2553,3 +2553,53 @@ button {
 .payment-method-section .form-group {
   margin-bottom: 0;
 }
+.order-success-box {
+  padding: 35px 22px;
+  color: var(--green-dark);
+  background: var(--green-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  text-align: center;
+}
+
+.order-success-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 15px;
+  place-items: center;
+  color: var(--white);
+  background: var(--green);
+  border-radius: 50%;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.order-success-box h2 {
+  margin: 0 0 10px;
+  color: var(--green-dark);
+}
+
+.order-success-details {
+  max-width: 430px;
+  margin: 22px auto;
+  padding: 15px 18px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  text-align: left;
+}
+
+.order-success-details p {
+  margin: 8px 0;
+  color: var(--muted);
+}
+
+.order-success-details strong {
+  color: var(--green-dark);
+}
+
+.order-success-note {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
