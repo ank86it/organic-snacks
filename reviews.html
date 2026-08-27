@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Customer reviews and feedback for Organic Snacks Store.">
+  <title>Customer Reviews - Organic Snacks Store</title>
+  <link rel="stylesheet" href="style.css?v=8">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <nav class="navbar">
+      <a class="brand" href="index.html">
+        <span class="brand-icon">🌿</span>
+        <span>Organic Snacks</span>
+      </a>
+
+      <button id="menu-button" class="menu-button" type="button" aria-label="Open navigation menu" aria-expanded="false">
+        ☰
+      </button>
+
+      <div id="nav-links" class="nav-links">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#products">Products</a>
+        <a href="order-status.html">Track Order</a>
+        <a href="reviews.html" class="active">Reviews</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="cart.html" class="cart-nav-link">
+          Cart
+          <span id="reviews-cart-count" class="cart-count">0</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="reviews-page page-section">
+
+    <div class="cart-heading">
+      <p class="eyebrow">CUSTOMER FEEDBACK</p>
+      <h1>Customer Reviews & Rating</h1>
+      <p>Read honest feedback from customers who have purchased our organic snacks.</p>
+    </div>
+
+    <div class="reviews-layout">
+
+      <!-- SUBMIT REVIEW FORM -->
+      <section class="checkout-form-section">
+        <h2>Submit Your Order Review</h2>
+        <p id="review-form-message" class="product-message" aria-live="polite">Enter your Order ID to post feedback.</p>
+
+        <form id="review-submission-form">
+          <div class="form-group">
+            <label for="review-order-id">Order ID</label>
+            <input id="review-order-id" type="text" placeholder="e.g. ORD-2025-123456" required>
+          </div>
+
+          <div class="form-group">
+            <label for="review-customer-name">Your Name</label>
+            <input id="review-customer-name" type="text" placeholder="Your Full Name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="review-rating">Overall Rating</label>
+            <select id="review-rating" required>
+              <option value="5">⭐⭐⭐⭐⭐ (5 Stars - Excellent)</option>
+              <option value="4">⭐⭐⭐⭐ (4 Stars - Very Good)</option>
+              <option value="3">⭐⭐⭐ (3 Stars - Average)</option>
+              <option value="2">⭐⭐ (2 Stars - Below Expectations)</option>
+              <option value="1">⭐ (1 Star - Poor)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="review-text">Written Feedback</label>
+            <textarea id="review-text" rows="4" placeholder="How was the taste, packaging, and delivery speed?" required></textarea>
+          </div>
+
+          <button id="review-submit-btn" class="primary-button checkout-submit-button" type="submit">Submit Review for Approval</button>
+        </form>
+      </section>
+
+      <!-- APPROVED REVIEWS LIST -->
+      <section class="reviews-list-section">
+        <h2>Approved Reviews</h2>
+        <p id="approved-reviews-message" class="product-message"></p>
+        <div id="approved-reviews-container" class="reviews-grid">
+          <!-- Filled dynamically by reviews.js -->
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h2>🌿 Organic Snacks</h2>
+        <p>Simple snacks with clear information.</p>
+      </div>
+
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <a href="index.html#home">Home</a>
+        <a href="index.html#products">Products</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="cart.html">Cart</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Organic Snacks Store. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="reviews.js?v=1"></script>
+</body>
+
+</html>
