@@ -1,6 +1,6 @@
 /*
   ORGANIC SNACKS STORE
-  Stage 17a - Owner Panel JavaScript (Fixed & Clean)
+  Stage 18 - Owner Panel JavaScript (Part 1 of 2)
 */
 
 const API_URL =
@@ -11,13 +11,14 @@ const ADMIN_SESSION_KEY = "organicSnacksAdminPassword";
 let currentAdminPassword = "";
 let adminOrdersData = [];
 let adminProductsData = [];
+let adminReviewsData = [];
 
 document.addEventListener("DOMContentLoaded", function () {
   setupAdminLogin();
   setupTabSwitching();
   setupOrderFilterEvents();
 
-  // Auto-login if session exists
+  // Auto-login if session password exists
   const savedPass = sessionStorage.getItem(ADMIN_SESSION_KEY);
   if (savedPass) {
     currentAdminPassword = savedPass;
@@ -87,7 +88,7 @@ async function fetchAdminDashboardData() {
   document.getElementById("admin-dashboard-section").style.display = "block";
   document.getElementById("admin-logout-button").style.display = "inline-block";
 
-  showOrdersMsg("Loading order and inventory records from Google Sheets...");
+  showOrdersMsg("Loading records from Google Sheets...");
 
   try {
     const res = await fetch(API_URL, {
@@ -107,10 +108,12 @@ async function fetchAdminDashboardData() {
 
     adminOrdersData = data.orders || [];
     adminProductsData = data.products || [];
+    adminReviewsData = data.reviews || [];
 
     renderStats();
     renderOrdersTable();
     renderStockTable();
+    renderReviewsTable();
 
     showOrdersMsg("");
   } catch (e) {
@@ -144,13 +147,13 @@ function setupOrderFilterEvents() {
 /* RENDER ORDERS TABLE (WITH FILTERING) */
 function renderOrdersTable() {
   const tbody = document.getElementById("admin-orders-tbody");
+  if (!tbody) return;
   tbody.innerHTML = "";
 
   const searchVal = (document.getElementById("admin-order-search")?.value || "").toLowerCase().trim();
   const orderStatusVal = (document.getElementById("admin-order-status-filter")?.value || "all").toLowerCase();
   const payStatusVal = (document.getElementById("admin-payment-status-filter")?.value || "all").toLowerCase();
 
-  // Filter Orders
   const filteredOrders = adminOrdersData.filter(order => {
     const orderId = String(order["Order ID"] || "").toLowerCase();
     const name = String(order["Customer Name"] || "").toLowerCase();
@@ -277,10 +280,10 @@ async function saveOrderUpdate(orderId, payStatus, orderStatus, tracking, button
     buttonEl.textContent = "Save";
   }
 }
-
 /* RENDER STOCK TABLE */
 function renderStockTable() {
   const tbody = document.getElementById("admin-stock-tbody");
+  if (!tbody) return;
   tbody.innerHTML = "";
 
   adminProductsData.forEach(prod => {
@@ -349,27 +352,120 @@ async function saveStockUpdate(productId, newStock, buttonEl) {
   }
 }
 
+/* RENDER REVIEWS MODERATION TABLE (Stage 18) */
+function renderReviewsTable() {
+  const tbody = document.getElementById("admin-reviews-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  if (adminReviewsData.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">No customer reviews found.</td></tr>`;
+    return;
+  }
+
+  adminReviewsData.forEach(rev => {
+    const tr = document.createElement("tr");
+
+    const reviewId = rev["Review ID"] || "";
+    const date = formatDate(rev["Review Date"]);
+    const orderId = rev["Order ID"] || "N/A";
+    const name = rev["Customer Name"] || "Customer";
+    const rating = Number(rev["Rating"]) || 5;
+    const text = rev["Review Text"] || "";
+    const status = rev["Status"] || "Pending";
+
+    const stars = "⭐".repeat(rating);
+
+    let statusBadgeColor = "#fff0bd"; // Pending yellow
+    if (status === "Approved") statusBadgeColor = "#dcf8e6"; // Green
+    if (status === "Rejected") statusBadgeColor = "#ffe0dc"; // Red
+
+    tr.innerHTML = `
+      <td><strong>${escapeHTML(reviewId)}</strong><br><small>${date}</small></td>
+      <td><strong>${escapeHTML(orderId)}</strong></td>
+      <td>${escapeHTML(name)}</td>
+      <td>${stars} (${rating})</td>
+      <td><small>${escapeHTML(text)}</small></td>
+      <td>
+        <span style="padding:4px 8px; border-radius:12px; background:${statusBadgeColor}; font-weight:bold; font-size:0.8rem;">
+          ${escapeHTML(status)}
+        </span>
+      </td>
+      <td>
+        <div style="display:flex; gap:6px;">
+          <button class="primary-button approve-btn" style="padding:4px 10px; font-size:0.75rem; background:#218653;">Approve</button>
+          <button class="clear-cart-button reject-btn" style="padding:4px 10px; font-size:0.75rem;">Reject</button>
+        </div>
+      </td>
+    `;
+
+    const approveBtn = tr.querySelector(".approve-btn");
+    const rejectBtn = tr.querySelector(".reject-btn");
+
+    approveBtn.addEventListener("click", function () {
+      updateReviewStatus(reviewId, "Approved", approveBtn);
+    });
+
+    rejectBtn.addEventListener("click", function () {
+      updateReviewStatus(reviewId, "Rejected", rejectBtn);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+
+async function updateReviewStatus(reviewId, newStatus, buttonEl) {
+  buttonEl.disabled = true;
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "admin-update-review",
+        password: currentAdminPassword,
+        reviewId: reviewId,
+        status: newStatus
+      })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("Review " + reviewId + " status updated to " + newStatus + "!");
+      fetchAdminDashboardData();
+    } else {
+      alert("Error: " + data.message);
+    }
+  } catch (e) {
+    alert("Review update failed: " + e.message);
+  } finally {
+    buttonEl.disabled = false;
+  }
+}
+
 /* TAB SWITCHING */
 function setupTabSwitching() {
   const tabOrdersBtn = document.getElementById("tab-orders-btn");
   const tabInventoryBtn = document.getElementById("tab-inventory-btn");
+  const tabReviewsBtn = document.getElementById("tab-reviews-btn");
+
   const tabOrdersContent = document.getElementById("tab-orders-content");
   const tabInventoryContent = document.getElementById("tab-inventory-content");
+  const tabReviewsContent = document.getElementById("tab-reviews-content");
+
   const refreshBtn = document.getElementById("refresh-orders-btn");
 
-  if (tabOrdersBtn && tabInventoryBtn) {
+  if (tabOrdersBtn && tabInventoryBtn && tabReviewsBtn) {
     tabOrdersBtn.addEventListener("click", function () {
-      tabOrdersBtn.classList.add("active");
-      tabInventoryBtn.classList.remove("active");
-      tabOrdersContent.style.display = "block";
-      tabInventoryContent.style.display = "none";
+      setActiveTab(tabOrdersBtn, tabOrdersContent);
     });
 
     tabInventoryBtn.addEventListener("click", function () {
-      tabInventoryBtn.classList.add("active");
-      tabOrdersBtn.classList.remove("active");
-      tabInventoryContent.style.display = "block";
-      tabOrdersContent.style.display = "none";
+      setActiveTab(tabInventoryBtn, tabInventoryContent);
+    });
+
+    tabReviewsBtn.addEventListener("click", function () {
+      setActiveTab(tabReviewsBtn, tabReviewsContent);
     });
   }
 
@@ -378,6 +474,17 @@ function setupTabSwitching() {
       fetchAdminDashboardData();
     });
   }
+}
+
+function setActiveTab(activeBtn, activeContent) {
+  const allBtns = document.querySelectorAll(".admin-tab-btn");
+  const allContents = document.querySelectorAll(".admin-tab-content");
+
+  allBtns.forEach(btn => btn.classList.remove("active"));
+  allContents.forEach(content => content.style.display = "none");
+
+  activeBtn.classList.add("active");
+  if (activeContent) activeContent.style.display = "block";
 }
 
 /* UTILS */
