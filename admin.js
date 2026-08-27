@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setupAdminLogin();
   setupTabSwitching();
   setupOrderFilterEvents();
+  setupReviewFilterEvents();
 
   // Auto-login if session password exists
   const savedPass = sessionStorage.getItem(ADMIN_SESSION_KEY);
@@ -280,6 +281,10 @@ async function saveOrderUpdate(orderId, payStatus, orderStatus, tracking, button
     buttonEl.textContent = "Save";
   }
 }
+/* ==================================================
+   STAGE 18 - ADMIN PANEL (Part 2 of 2)
+================================================== */
+
 /* RENDER STOCK TABLE */
 function renderStockTable() {
   const tbody = document.getElementById("admin-stock-tbody");
@@ -352,18 +357,58 @@ async function saveStockUpdate(productId, newStock, buttonEl) {
   }
 }
 
-/* RENDER REVIEWS MODERATION TABLE (Stage 18) */
+/* SETUP REVIEW FILTER EVENT LISTENERS */
+function setupReviewFilterEvents() {
+  const searchInput = document.getElementById("admin-review-search");
+  const statusFilter = document.getElementById("admin-review-status-filter");
+  const ratingFilter = document.getElementById("admin-review-rating-filter");
+
+  if (searchInput) searchInput.addEventListener("input", renderReviewsTable);
+  if (statusFilter) statusFilter.addEventListener("change", renderReviewsTable);
+  if (ratingFilter) ratingFilter.addEventListener("change", renderReviewsTable);
+}
+
+/* RENDER REVIEWS MODERATION TABLE (WITH FILTERING) */
 function renderReviewsTable() {
   const tbody = document.getElementById("admin-reviews-tbody");
   if (!tbody) return;
   tbody.innerHTML = "";
 
-  if (adminReviewsData.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">No customer reviews found.</td></tr>`;
+  const searchVal = (document.getElementById("admin-review-search")?.value || "").toLowerCase().trim();
+  const statusVal = (document.getElementById("admin-review-status-filter")?.value || "all").toLowerCase();
+  const ratingVal = (document.getElementById("admin-review-rating-filter")?.value || "all").toLowerCase();
+
+  // Filter Reviews
+  const filteredReviews = adminReviewsData.filter(rev => {
+    const reviewId = String(rev["Review ID"] || "").toLowerCase();
+    const orderId = String(rev["Order ID"] || "").toLowerCase();
+    const name = String(rev["Customer Name"] || "").toLowerCase();
+    const text = String(rev["Review Text"] || "").toLowerCase();
+
+    const matchesSearch =
+      !searchVal ||
+      reviewId.includes(searchVal) ||
+      orderId.includes(searchVal) ||
+      name.includes(searchVal) ||
+      text.includes(searchVal);
+
+    const status = String(rev["Status"] || "").toLowerCase();
+    const matchesStatus =
+      statusVal === "all" || status === statusVal;
+
+    const rating = String(rev["Rating"] || "").toLowerCase();
+    const matchesRating =
+      ratingVal === "all" || rating === ratingVal;
+
+    return matchesSearch && matchesStatus && matchesRating;
+  });
+
+  if (filteredReviews.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">No matching customer reviews found.</td></tr>`;
     return;
   }
 
-  adminReviewsData.forEach(rev => {
+  filteredReviews.forEach(rev => {
     const tr = document.createElement("tr");
 
     const reviewId = rev["Review ID"] || "";
