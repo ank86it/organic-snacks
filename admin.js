@@ -1,6 +1,6 @@
 /*
   ORGANIC SNACKS STORE
-  Stage 17a - Owner Panel JavaScript
+  Stage 17a - Owner Panel JavaScript (with Order Search & Filters)
 */
 
 const API_URL =
@@ -15,8 +15,9 @@ let adminProductsData = [];
 document.addEventListener("DOMContentLoaded", function () {
   setupAdminLogin();
   setupTabSwitching();
+  setupOrderFilterEvents();
 
-  // Check if session password exists
+  // Auto-login if session exists
   const savedPass = sessionStorage.getItem(ADMIN_SESSION_KEY);
   if (savedPass) {
     currentAdminPassword = savedPass;
@@ -60,10 +61,8 @@ async function verifyAndLogin(password) {
 
     const rawText = await res.text();
 
-    // Check if Google returned an HTML error page
     if (rawText.trim().startsWith("<")) {
-      console.error("Google HTML Error Page:", rawText);
-      showLoginMsg("Google Error: " + rawText.replace(/<[^>]*>?/gm, ' ').slice(0, 150) + "...");
+      showLoginMsg("Google Server Error. Please refresh and try again.");
       return;
     }
 
@@ -131,17 +130,57 @@ function renderStats() {
   document.getElementById("stat-total-products").textContent = adminProductsData.length;
 }
 
-/* RENDER ORDERS TABLE */
+/* SETUP ORDER FILTER EVENT LISTENERS */
+function setupOrderFilterEvents() {
+  const searchInput = document.getElementById("admin-order-search");
+  const orderStatusFilter = document.getElementById("admin-order-status-filter");
+  const paymentStatusFilter = document.getElementById("admin-payment-status-filter");
+
+  if (searchInput) searchInput.addEventListener("input", renderOrdersTable);
+  if (orderStatusFilter) orderStatusFilter.addEventListener("change", renderOrdersTable);
+  if (paymentStatusFilter) paymentStatusFilter.addEventListener("change", renderOrdersTable);
+}
+
+/* RENDER ORDERS TABLE (WITH FILTERING) */
 function renderOrdersTable() {
   const tbody = document.getElementById("admin-orders-tbody");
   tbody.innerHTML = "";
 
-  if (adminOrdersData.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No orders found in database.</td></tr>`;
+  const searchVal = (document.getElementById("admin-order-search")?.value || "").toLowerCase().trim();
+  const orderStatusVal = (document.getElementById("admin-order-status-filter")?.value || "all").toLowerCase();
+  const payStatusVal = (document.getElementById("admin-payment-status-filter")?.value || "all").toLowerCase();
+
+  // Filter Orders
+  const filteredOrders = adminOrdersData.filter(order => {
+    const orderId = String(order["Order ID"] || "").toLowerCase();
+    const name = String(order["Customer Name"] || "").toLowerCase();
+    const phone = String(order["Phone"] || "").toLowerCase();
+    const items = String(order["Product Details"] || "").toLowerCase();
+
+    const matchesSearch =
+      !searchVal ||
+      orderId.includes(searchVal) ||
+      name.includes(searchVal) ||
+      phone.includes(searchVal) ||
+      items.includes(searchVal);
+
+    const orderStatus = String(order["Order Status"] || "").toLowerCase();
+    const matchesOrderStatus =
+      orderStatusVal === "all" || orderStatus === orderStatusVal;
+
+    const payStatus = String(order["Payment Status"] || "").toLowerCase();
+    const matchesPayStatus =
+      payStatusVal === "all" || payStatus === payStatusVal;
+
+    return matchesSearch && matchesOrderStatus && matchesPayStatus;
+  });
+
+  if (filteredOrders.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px;">No matching orders found.</td></tr>`;
     return;
   }
 
-  adminOrdersData.forEach(order => {
+  filteredOrders.forEach(order => {
     const tr = document.createElement("tr");
 
     const orderId = order["Order ID"] || "";
@@ -221,6 +260,14 @@ async function saveOrderUpdate(orderId, payStatus, orderStatus, tracking, button
     const data = await res.json();
     if (data.success) {
       alert("Order " + orderId + " updated successfully!");
+      // Update local array data
+      const localOrd = adminOrdersData.find(o => String(o["Order ID"]) === String(orderId));
+      if (localOrd) {
+        localOrd["Payment Status"] = payStatus;
+        localOrd["Order Status"] = orderStatus;
+        localOrd["Tracking Number"] = tracking;
+      }
+      renderStats();
     } else {
       alert("Error: " + data.message);
     }
@@ -291,7 +338,7 @@ async function saveStockUpdate(productId, newStock, buttonEl) {
     const data = await res.json();
     if (data.success) {
       alert("Stock for " + productId + " updated to " + newStock + "!");
-      fetchAdminDashboardData(); // Reload stats and values
+      fetchAdminDashboardData();
     } else {
       alert("Error: " + data.message);
     }
@@ -360,7 +407,7 @@ function formatMoney(val) {
 }
 
 function escapeHTML(str) {
-  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 function escapeAttribute(str) {
