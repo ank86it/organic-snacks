@@ -58,7 +58,16 @@ async function verifyAndLogin(password) {
       body: JSON.stringify({ action: "admin-login", password: password })
     });
 
-    const data = await res.json();
+    const rawText = await res.text();
+
+    // Check if Google returned an HTML error page
+    if (rawText.trim().startsWith("<")) {
+      console.error("Google HTML Error Page:", rawText);
+      showLoginMsg("Google Error: " + rawText.replace(/<[^>]*>?/gm, ' ').slice(0, 150) + "...");
+      return;
+    }
+
+    const data = JSON.parse(rawText);
 
     if (data.success) {
       currentAdminPassword = password;
@@ -69,7 +78,7 @@ async function verifyAndLogin(password) {
       showLoginMsg(data.message || "Invalid Password.");
     }
   } catch (e) {
-    showLoginMsg("Login connection error: " + e.message);
+    showLoginMsg("Login error: " + e.message);
   }
 }
 
