@@ -1,6 +1,6 @@
 /*
   ORGANIC SNACKS STORE
-  Stage 17a - Owner Panel JavaScript (with Order Search & Filters)
+  Stage 17a - Owner Panel JavaScript (Fixed & Clean)
 */
 
 const API_URL =
@@ -260,7 +260,6 @@ async function saveOrderUpdate(orderId, payStatus, orderStatus, tracking, button
     const data = await res.json();
     if (data.success) {
       alert("Order " + orderId + " updated successfully!");
-      // Update local array data
       const localOrd = adminOrdersData.find(o => String(o["Order ID"]) === String(orderId));
       if (localOrd) {
         localOrd["Payment Status"] = payStatus;
@@ -407,7 +406,11 @@ function formatMoney(val) {
 }
 
 function escapeHTML(str) {
-  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace/>/g, "&gt;").replace(/"/g, "&quot;");
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function escapeAttribute(str) {
