@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store Owner Dashboard - Organic Snacks Store</title>
+  <link rel="stylesheet" href="style.css?v=6">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <nav class="navbar">
+      <a class="brand" href="index.html">
+        <span class="brand-icon">🌿</span>
+        <span>Organic Snacks Owner Panel</span>
+      </a>
+
+      <button id="menu-button" class="menu-button" type="button" aria-label="Open menu">
+        ☰
+      </button>
+
+      <div id="nav-links" class="nav-links">
+        <a href="index.html">Main Website</a>
+        <a href="order-status.html">Public Tracker</a>
+        <button id="admin-logout-button" class="clear-cart-button" style="display:none;">Logout</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="admin-page">
+
+    <!-- LOGIN CARD -->
+    <section id="admin-login-section" class="admin-login-card">
+      <div class="cart-heading">
+        <p class="eyebrow">STORE OWNER ACCESS</p>
+        <h1>Admin Portal Login</h1>
+        <p>Please enter your store master password to manage orders and stock.</p>
+      </div>
+
+      <p id="admin-login-message" class="product-message" aria-live="polite"></p>
+
+      <form id="admin-login-form" class="admin-form">
+        <div class="form-group">
+          <label for="admin-password-input">Master Password</label>
+          <input id="admin-password-input" type="password" placeholder="Enter password (default: admin123)" required>
+        </div>
+        <button class="primary-button checkout-submit-button" type="submit">Login to Dashboard</button>
+      </form>
+    </section>
+
+    <!-- DASHBOARD PANEL (HIDDEN BY DEFAULT) -->
+    <section id="admin-dashboard-section" class="admin-dashboard-container" style="display:none;">
+
+      <!-- STATS BAR -->
+      <div class="admin-stats-grid">
+        <div class="stat-card">
+          <span class="stat-number" id="stat-total-orders">0</span>
+          <span class="stat-label">Total Orders</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="stat-pending-payments">0</span>
+          <span class="stat-label">Pending Payments</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="stat-total-products">0</span>
+          <span class="stat-label">Active Products</span>
+        </div>
+      </div>
+
+      <!-- DASHBOARD TABS -->
+      <div class="admin-tab-bar">
+        <button id="tab-orders-btn" class="admin-tab-btn active">📦 Order Management</button>
+        <button id="tab-inventory-btn" class="admin-tab-btn">🧈 Inventory & Stock</button>
+      </div>
+
+      <!-- ORDERS TAB CONTENT -->
+      <div id="tab-orders-content" class="admin-tab-content">
+        <div class="admin-table-header">
+          <h2>Customer Orders Folder</h2>
+          <button id="refresh-orders-btn" class="secondary-button">🔄 Refresh Data</button>
+        </div>
+
+        <p id="admin-orders-message" class="product-message"></p>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Date / Order ID</th>
+                <th>Customer & Address</th>
+                <th>Items Ordered</th>
+                <th>Total</th>
+                <th>Payment Status</th>
+                <th>Order Status</th>
+                <th>Tracking #</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-tbody">
+              <!-- Order rows populated by admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- INVENTORY TAB CONTENT -->
+      <div id="tab-inventory-content" class="admin-tab-content" style="display:none;">
+        <div class="admin-table-header">
+          <h2>Product Inventory Stock Control</h2>
+        </div>
+
+        <p id="admin-stock-message" class="product-message"></p>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Fat / Oil Used</th>
+                <th>Current Stock</th>
+                <th>Update Stock</th>
+              </tr>
+            </thead>
+            <tbody id="admin-stock-tbody">
+              <!-- Stock rows populated by admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>© 2025 Organic Snacks Store Owner Panel. Secured with Google Apps Script.</p>
+    </div>
+  </footer>
+
+  <script src="admin.js?v=1"></script>
+</body>
+
+</html>
