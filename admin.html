@@ -74,6 +74,7 @@
       <div class="admin-tab-bar">
         <button id="tab-orders-btn" class="admin-tab-btn active">📦 Order Management</button>
         <button id="tab-inventory-btn" class="admin-tab-btn">🧈 Inventory & Stock</button>
+        <button id="tab-reviews-btn" class="admin-tab-btn">⭐ Reviews Moderation</button>
       </div>
 
       <!-- ORDERS TAB CONTENT -->
@@ -163,7 +164,33 @@
           </table>
         </div>
       </div>
+<!-- REVIEWS TAB CONTENT -->
+<div id="tab-reviews-content" class="admin-tab-content" style="display:none;">
+  <div class="admin-table-header">
+    <h2>Customer Reviews Moderation</h2>
+  </div>
 
+  <p id="admin-reviews-message" class="product-message"></p>
+
+  <div class="admin-table-wrapper">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Review ID / Date</th>
+          <th>Order ID</th>
+          <th>Customer Name</th>
+          <th>Rating</th>
+          <th>Feedback Text</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="admin-reviews-tbody">
+        <!-- Reviews populated dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
     </section>
 
   </main>
@@ -174,7 +201,7 @@
     </div>
   </footer>
 
-  <script src="admin.js?v=2"></script>
+  <script src="admin.js?v=3"></script>
 </body>
 
 </html>
