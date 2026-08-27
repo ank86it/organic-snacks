@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Store Owner Dashboard - Organic Snacks Store</title>
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 
 <body>
@@ -45,7 +45,7 @@
       <form id="admin-login-form" class="admin-form">
         <div class="form-group">
           <label for="admin-password-input">Master Password</label>
-          <input id="admin-password-input" type="password" placeholder="Enter password (default: admin123)" required>
+          <input id="admin-password-input" type="password" placeholder="Enter master password" required>
         </div>
         <button class="primary-button checkout-submit-button" type="submit">Login to Dashboard</button>
       </form>
@@ -83,6 +83,36 @@
           <button id="refresh-orders-btn" class="secondary-button">🔄 Refresh Data</button>
         </div>
 
+        <!-- ORDER FILTERS TOOLBAR -->
+        <div class="product-toolbar" style="margin-bottom: 15px;">
+          <input 
+            id="admin-order-search" 
+            class="search-input" 
+            type="search" 
+            placeholder="Search Order ID, Name, Phone, Items..."
+          >
+
+          <select id="admin-order-status-filter" class="category-filter">
+            <option value="all">All Order Statuses</option>
+            <option value="Order Placed">Order Placed</option>
+            <option value="Payment Confirmed">Confirmed</option>
+            <option value="Preparing">Preparing</option>
+            <option value="Packed">Packed</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Out for Delivery">Out for Delivery</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+
+          <select id="admin-payment-status-filter" class="category-filter">
+            <option value="all">All Payment Statuses</option>
+            <option value="Payment Pending">Payment Pending</option>
+            <option value="Payment Confirmed">Payment Confirmed</option>
+            <option value="Failed">Failed</option>
+            <option value="Refunded">Refunded</option>
+          </select>
+        </div>
+
         <p id="admin-orders-message" class="product-message"></p>
 
         <div class="admin-table-wrapper">
@@ -100,7 +130,7 @@
               </tr>
             </thead>
             <tbody id="admin-orders-tbody">
-              <!-- Order rows populated by admin.js -->
+              <!-- Order rows populated dynamically -->
             </tbody>
           </table>
         </div>
@@ -128,7 +158,7 @@
               </tr>
             </thead>
             <tbody id="admin-stock-tbody">
-              <!-- Stock rows populated by admin.js -->
+              <!-- Stock rows populated dynamically -->
             </tbody>
           </table>
         </div>
@@ -144,7 +174,7 @@
     </div>
   </footer>
 
-  <script src="admin.js?v=1"></script>
+  <script src="admin.js?v=2"></script>
 </body>
 
 </html>
