@@ -1,6 +1,6 @@
 /*
   ORGANIC SNACKS STORE
-  Stage 18 - Owner Panel JavaScript (Part 1 of 2)
+  Stage 19 - Owner Panel JavaScript (Part 1 of 2)
 */
 
 const API_URL =
@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
   setupOrderFilterEvents();
   setupReviewFilterEvents();
 
-  // Auto-login if session password exists
   const savedPass = sessionStorage.getItem(ADMIN_SESSION_KEY);
   if (savedPass) {
     currentAdminPassword = savedPass;
@@ -145,7 +144,7 @@ function setupOrderFilterEvents() {
   if (paymentStatusFilter) paymentStatusFilter.addEventListener("change", renderOrdersTable);
 }
 
-/* RENDER ORDERS TABLE (WITH FILTERING) */
+/* RENDER ORDERS TABLE (WITH NOTES HIGHLIGHT) */
 function renderOrdersTable() {
   const tbody = document.getElementById("admin-orders-tbody");
   if (!tbody) return;
@@ -160,13 +159,15 @@ function renderOrdersTable() {
     const name = String(order["Customer Name"] || "").toLowerCase();
     const phone = String(order["Phone"] || "").toLowerCase();
     const items = String(order["Product Details"] || "").toLowerCase();
+    const notes = String(order["Notes"] || "").toLowerCase();
 
     const matchesSearch =
       !searchVal ||
       orderId.includes(searchVal) ||
       name.includes(searchVal) ||
       phone.includes(searchVal) ||
-      items.includes(searchVal);
+      items.includes(searchVal) ||
+      notes.includes(searchVal);
 
     const orderStatus = String(order["Order Status"] || "").toLowerCase();
     const matchesOrderStatus =
@@ -191,16 +192,25 @@ function renderOrdersTable() {
     const date = formatDate(order["Order Date"]);
     const customer = `${order["Customer Name"] || ""}<br><small>${order["Phone"] || ""}</small><br><small style="color:#666;">${order["Address"] || ""}</small>`;
     const items = order["Product Details"] || "";
+    const notes = order["Notes"] || "";
     const total = order["Total Amount"] || 0;
     const paymentMethod = order["Payment Method"] || "N/A";
     const paymentStatus = order["Payment Status"] || "Payment Pending";
     const orderStatus = order["Order Status"] || "Order Placed";
     const trackingNo = order["Tracking Number"] || "";
 
+    // Build items + notes display
+    let itemsHtml = `<small>${escapeHTML(items)}</small>`;
+    if (notes) {
+      itemsHtml += `<div style="margin-top:6px; padding:6px 8px; background:#fef3c7; border:1px solid #f59e0b; border-radius:6px; color:#92400e; font-size:0.8rem; font-weight:bold;">
+        📝 Notes/Requests: ${escapeHTML(notes)}
+      </div>`;
+    }
+
     tr.innerHTML = `
       <td><strong>${escapeHTML(orderId)}</strong><br><small>${date}</small></td>
       <td>${customer}</td>
-      <td><small>${escapeHTML(items)}</small></td>
+      <td>${itemsHtml}</td>
       <td><strong>₹${formatMoney(total)}</strong><br><small>(${paymentMethod})</small></td>
       <td>
         <select class="admin-select payment-select">
@@ -213,6 +223,7 @@ function renderOrdersTable() {
       <td>
         <select class="admin-select status-select">
           <option value="Order Placed" ${orderStatus === 'Order Placed' ? 'selected' : ''}>Order Placed</option>
+          <option value="Special Order Received" ${orderStatus === 'Special Order Received' ? 'selected' : ''}>⭐ Special Order</option>
           <option value="Payment Confirmed" ${orderStatus === 'Payment Confirmed' ? 'selected' : ''}>Confirmed</option>
           <option value="Preparing" ${orderStatus === 'Preparing' ? 'selected' : ''}>Preparing</option>
           <option value="Packed" ${orderStatus === 'Packed' ? 'selected' : ''}>Packed</option>
@@ -282,10 +293,10 @@ async function saveOrderUpdate(orderId, payStatus, orderStatus, tracking, button
   }
 }
 /* ==================================================
-   STAGE 18 - ADMIN PANEL (Part 2 of 2)
+   STAGE 19 - ADMIN PANEL (Part 2 of 2)
 ================================================== */
 
-/* RENDER STOCK TABLE */
+/* RENDER STOCK & SPECIAL ORDER TABLE */
 function renderStockTable() {
   const tbody = document.getElementById("admin-stock-tbody");
   if (!tbody) return;
@@ -300,6 +311,7 @@ function renderStockTable() {
     const price = prod["Price"] || 0;
     const fatUsed = prod["Oil/Ghee/Butter Used"] || "N/A";
     const currentStock = prod["Stock"] !== undefined ? prod["Stock"] : 0;
+    const isSpecial = String(prod["Special Order"] || "").trim().toLowerCase() === "yes";
 
     tr.innerHTML = `
       <td><strong>${escapeHTML(id)}</strong></td>
@@ -307,6 +319,12 @@ function renderStockTable() {
       <td>${escapeHTML(category)}</td>
       <td>₹${formatMoney(price)}</td>
       <td>${escapeHTML(fatUsed)}</td>
+      <td>
+        <select class="admin-select special-order-select">
+          <option value="No" ${!isSpecial ? 'selected' : ''}>No</option>
+          <option value="Yes" ${isSpecial ? 'selected' : ''}>⭐ Yes</option>
+        </select>
+      </td>
       <td><span class="stock-badge">${currentStock}</span></td>
       <td>
         <div style="display:flex; gap:6px;">
@@ -319,14 +337,15 @@ function renderStockTable() {
     const saveStockBtn = tr.querySelector(".save-stock-btn");
     saveStockBtn.addEventListener("click", function () {
       const newStockVal = tr.querySelector(".stock-input").value;
-      saveStockUpdate(id, newStockVal, saveStockBtn);
+      const specialOrderVal = tr.querySelector(".special-order-select").value;
+      saveProductUpdate(id, newStockVal, specialOrderVal, saveStockBtn);
     });
 
     tbody.appendChild(tr);
   });
 }
 
-async function saveStockUpdate(productId, newStock, buttonEl) {
+async function saveProductUpdate(productId, newStock, specialOrderVal, buttonEl) {
   buttonEl.disabled = true;
   buttonEl.textContent = "Updating...";
 
@@ -335,22 +354,23 @@ async function saveStockUpdate(productId, newStock, buttonEl) {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
-        action: "admin-update-stock",
+        action: "admin-update-product",
         password: currentAdminPassword,
         productId: productId,
-        newStock: newStock
+        newStock: newStock,
+        specialOrder: specialOrderVal
       })
     });
 
     const data = await res.json();
     if (data.success) {
-      alert("Stock for " + productId + " updated to " + newStock + "!");
+      alert("Product " + productId + " updated! (Stock: " + newStock + ", Special Order: " + specialOrderVal + ")");
       fetchAdminDashboardData();
     } else {
       alert("Error: " + data.message);
     }
   } catch (e) {
-    alert("Stock update failed: " + e.message);
+    alert("Product update failed: " + e.message);
   } finally {
     buttonEl.disabled = false;
     buttonEl.textContent = "Update";
@@ -368,7 +388,7 @@ function setupReviewFilterEvents() {
   if (ratingFilter) ratingFilter.addEventListener("change", renderReviewsTable);
 }
 
-/* RENDER REVIEWS MODERATION TABLE (WITH FILTERING) */
+/* RENDER REVIEWS MODERATION TABLE */
 function renderReviewsTable() {
   const tbody = document.getElementById("admin-reviews-tbody");
   if (!tbody) return;
@@ -378,7 +398,6 @@ function renderReviewsTable() {
   const statusVal = (document.getElementById("admin-review-status-filter")?.value || "all").toLowerCase();
   const ratingVal = (document.getElementById("admin-review-rating-filter")?.value || "all").toLowerCase();
 
-  // Filter Reviews
   const filteredReviews = adminReviewsData.filter(rev => {
     const reviewId = String(rev["Review ID"] || "").toLowerCase();
     const orderId = String(rev["Order ID"] || "").toLowerCase();
