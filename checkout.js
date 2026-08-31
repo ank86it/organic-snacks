@@ -271,13 +271,23 @@ function validateCheckoutDetails(details) {
   if (!details.address) return "Please enter your delivery address.";
   if (!details.paymentMethod) return "Please select a payment method.";
 
-  // Enforce UPI Transaction Reference for UPI payments
-  if (details.paymentMethod === "UPI" && !details.paymentReference) {
-    return "Please complete the UPI payment and enter your Transaction Reference Number / UTR.";
+  // Strict 12-Digit Numeric UPI UTR / RRN Validation
+  if (details.paymentMethod === "UPI") {
+    const upiRef = String(details.paymentReference || "").trim();
+
+    if (!upiRef) {
+      return "Please complete the UPI payment and enter the 12-digit numeric Transaction Reference Number (UTR / RRN).";
+    }
+
+    // Must be EXACTLY 12 digits (0-9)
+    if (!/^\d{12}$/.test(upiRef)) {
+      return "Invalid format. The UPI reference number must be exactly 12 numeric digits (e.g. 412345678901). No letters or spaces allowed.";
+    }
   }
 
   return "";
 }
+
 
 
 function showOrderSuccess(result) {
