@@ -1,6 +1,6 @@
 /*
   ORGANIC SNACKS STORE
-  Stage 13/14 - Checkout & Dynamic Auto-Amount UPI Payment
+  Stage 13/14 - Checkout, Dynamic UPI Payment & Order Submission
 */
 
 const CHECKOUT_CART_KEY = "organicSnacksCart";
@@ -8,7 +8,7 @@ const CHECKOUT_DETAILS_KEY = "organicSnacksCheckoutDetails";
 const CHECKOUT_API_URL =
   "https://script.google.com/macros/s/AKfycbwE0ce7dStvIRT8xvk_qtrzyEpCPJyYIHPy0BQciRO1J_KHuZ8CQ5wlr_ifqDfN5eqp/exec";
 
-// YOUR BUSINESS UPI DETAILS
+// STORE UPI DETAILS
 const STORE_UPI_ID = "ank86it@okicici";
 const STORE_NAME = "Organic Snacks Store";
 
@@ -162,7 +162,7 @@ function updateDynamicUpiPayment(amount) {
     qrAmtText.textContent = "₹" + formatMoney(finalAmount);
   }
 
-  // Deep Link URI
+  // UPI deep link with exact amount pre-filled
   let upiUri = `upi://pay?pa=${encodeURIComponent(STORE_UPI_ID)}&pn=${encodeURIComponent(STORE_NAME)}&cu=INR`;
   if (finalAmount > 0) {
     upiUri += `&am=${finalAmount}`;
@@ -320,3 +320,4 @@ function escapeHTML(str) {
 function escapeAttribute(str) {
   return escapeHTML(str);
 }
+
