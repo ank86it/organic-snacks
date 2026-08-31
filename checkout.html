@@ -3,575 +3,255 @@
 
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="Checkout page for Organic Snacks Store"
-  >
-
-  <title>
-    Checkout - Organic Snacks Store
-  </title>
-
-  <link
-    rel="stylesheet"
-    href="style.css?v=5"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Checkout page for Organic Snacks Store">
+  <title>Checkout - Organic Snacks Store</title>
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
 
+  <!-- ================= HEADER ================= -->
   <header class="site-header">
-
     <nav class="navbar">
-
-      <a
-        class="brand"
-        href="index.html"
-      >
+      <a class="brand" href="index.html">
         <span class="brand-icon">🌿</span>
         <span>Organic Snacks</span>
       </a>
 
-      <button
-        id="menu-button"
-        class="menu-button"
-        type="button"
-        aria-label="Open navigation menu"
-        aria-expanded="false"
-      >
+      <button id="menu-button" class="menu-button" type="button" aria-label="Open navigation menu" aria-expanded="false">
         ☰
       </button>
 
-      <div
-        id="nav-links"
-        class="nav-links"
-      >
-        <a href="index.html#home">
-          Home
-        </a>
-
-        <a href="index.html#products">
-          Products
-        </a>
-
-        <a href="index.html#articles">
-          Articles
-        </a>
-
-        <a href="index.html#contact">
-          Contact
-        </a>
-
-        <a
-          href="cart.html"
-          class="cart-nav-link"
-        >
+      <div id="nav-links" class="nav-links">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#products">Products</a>
+        <a href="index.html#articles">Articles</a>
+        <a href="order-status.html">Track Order</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="cart.html" class="cart-nav-link">
           Cart
-          <span
-            id="checkout-cart-count"
-            class="cart-count"
-          >
-            0
-          </span>
+          <span id="checkout-cart-count" class="cart-count">0</span>
         </a>
       </div>
-
     </nav>
-
   </header>
 
-
+  <!-- ================= MAIN CONTENT ================= -->
   <main class="checkout-page">
 
-    <a
-      class="product-detail-back"
-      href="cart.html"
-    >
+    <a class="product-detail-back" href="cart.html">
       ← Back to Cart
     </a>
 
     <div class="cart-heading">
-
-      <p class="eyebrow">
-        CHECKOUT
-      </p>
-
-      <h1>
-        Delivery information
-      </h1>
-
-      <p>
-        Enter your details so we can prepare your order.
-      </p>
-
+      <p class="eyebrow">CHECKOUT</p>
+      <h1>Delivery & Payment Details</h1>
+      <p>Enter your details and select your preferred payment method to complete your order.</p>
     </div>
-
 
     <div class="checkout-layout">
 
+      <!-- CHECKOUT FORM SECTION -->
       <section class="checkout-form-section">
+        <h2>Customer Information</h2>
 
-        <h2>
-          Customer Details
-        </h2>
+        <p id="checkout-message" class="product-message" aria-live="polite">Please complete your delivery details below.</p>
 
-        <p
-          id="checkout-message"
-          class="product-message"
-          aria-live="polite"
-        >
-          Please complete the form.
-        </p>
-
-        <form
-          id="checkout-form"
-          novalidate
-        >
+        <form id="checkout-form" novalidate>
 
           <div class="form-group">
-            <label for="customer-name">
-              Full Name
-            </label>
-
-            <input
-              id="customer-name"
-              name="customerName"
-              type="text"
-              autocomplete="name"
-              required
-            >
+            <label for="customer-name">Full Name</label>
+            <input id="customer-name" name="customerName" type="text" autocomplete="name" placeholder="Enter your full name" required>
           </div>
-
 
           <div class="form-row">
-
             <div class="form-group">
-              <label for="customer-phone">
-                Phone Number
-              </label>
-
-              <input
-                id="customer-phone"
-                name="phone"
-                type="tel"
-                autocomplete="tel"
-                required
-              >
+              <label for="customer-phone">Phone Number</label>
+              <input id="customer-phone" name="phone" type="tel" autocomplete="tel" placeholder="10-digit mobile number" required>
             </div>
 
             <div class="form-group">
-              <label for="customer-email">
-                Email Address
-              </label>
-
-              <input
-                id="customer-email"
-                name="email"
-                type="email"
-                autocomplete="email"
-              >
+              <label for="customer-email">Email Address <span class="optional-label">(Optional)</span></label>
+              <input id="customer-email" name="email" type="email" autocomplete="email" placeholder="your@email.com">
             </div>
-
           </div>
-
 
           <div class="form-group">
-            <label for="customer-address">
-              Complete Delivery Address
-            </label>
-
-            <textarea
-              id="customer-address"
-              name="address"
-              rows="4"
-              autocomplete="street-address"
-              required
-            ></textarea>
+            <label for="customer-address">Complete Delivery Address</label>
+            <textarea id="customer-address" name="address" rows="3" autocomplete="street-address" placeholder="House/Flat No., Building, Street Name, Area" required></textarea>
           </div>
-
 
           <div class="form-row">
-
             <div class="form-group">
-              <label for="customer-city">
-                City
-              </label>
-
-              <input
-                id="customer-city"
-                name="city"
-                type="text"
-                autocomplete="address-level2"
-                required
-              >
+              <label for="customer-city">City</label>
+              <input id="customer-city" name="city" type="text" autocomplete="address-level2" placeholder="Your City" required>
             </div>
 
             <div class="form-group">
-              <label for="customer-state">
-                State
-              </label>
-
-              <input
-                id="customer-state"
-                name="state"
-                type="text"
-                autocomplete="address-level1"
-                required
-              >
+              <label for="customer-state">State</label>
+              <input id="customer-state" name="state" type="text" autocomplete="address-level1" placeholder="Your State" required>
             </div>
-
           </div>
-
 
           <div class="form-group">
-            <label for="customer-postal-code">
-              Postal Code
-            </label>
-
-            <input
-              id="customer-postal-code"
-              name="postalCode"
-              type="text"
-              inputmode="numeric"
-              autocomplete="postal-code"
-              required
-            >
+            <label for="customer-postal-code">Postal Code (PIN)</label>
+            <input id="customer-postal-code" name="postalCode" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="6-digit PIN code" required>
           </div>
-
 
           <div class="form-group">
-            <label for="order-notes">
-              Order Notes
-              <span class="optional-label">
-                Optional
-              </span>
-            </label>
-
-            <textarea
-              id="order-notes"
-              name="notes"
-              rows="3"
-              placeholder="Any delivery or product notes..."
-            ></textarea>
+            <label for="order-notes">Order Notes <span class="optional-label">(Optional)</span></label>
+            <textarea id="order-notes" name="notes" rows="2" placeholder="Any special delivery instructions or requests..."></textarea>
           </div>
 
-        <!-- SINGLE PAYMENT METHOD SECTION -->
+          <!-- PAYMENT METHOD SECTION -->
+          <section class="payment-method-section" aria-labelledby="payment-method-heading">
+            <h2 id="payment-method-heading">Payment Method</h2>
+            <p class="payment-introduction">Select how you would like to pay for your order.</p>
 
-        <section
-          class="payment-method-section"
-          aria-labelledby="payment-method-heading"
-        >
+            <div class="payment-options">
 
-          <h2 id="payment-method-heading">
-            Payment Method
-          </h2>
-
-          <p class="payment-introduction">
-            Select your preferred payment method.
-            Payment confirmation will be completed before your order is accepted.
-          </p>
-
-          <div class="payment-options">
-
-            <label class="payment-option">
-
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="UPI"
-                required
-                checked
-              >
-
-              <span class="payment-option-content">
-                <strong>
-                  UPI Payment
-                </strong>
-
-                <small>
-                  Pay using Google Pay, PhonePe, Paytm or another UPI app.
-                </small>
-              </span>
-
-            </label>
-
-            <label class="payment-option">
-
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="Payment Link"
-              >
-
-              <span class="payment-option-content">
-                <strong>
-                  Payment Link
-                </strong>
-
-                <small>
-                  Receive a secure payment link after reviewing your order.
-                </small>
-              </span>
-
-            </label>
-
-            <label class="payment-option">
-
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="Cash on Delivery"
-              >
-
-              <span class="payment-option-content">
-                <strong>
-                  Cash on Delivery
-                </strong>
-
-                <small>
-                  Available only in selected delivery areas.
-                </small>
-              </span>
-
-            </label>
-
-          </div>
-
-          <!-- ONE UPI PAYMENT BOX ONLY -->
-
-          <div
-            id="upi-payment-box"
-            class="payment-instructions"
-          >
-
-            <h3>
-              Pay with Google Pay / UPI
-            </h3>
-
-            <p>
-              Scan the QR code or tap the button below.
-              The cart amount will be filled automatically.
-            </p>
-
-            <div class="upi-payment-card">
-
-              <img
-                id="upi-qr-image"
-                class="upi-qr-image"
-                src=""
-                alt="Dynamic UPI QR Code"
-              >
-
-              <p class="upi-scan-help">
-                Scan this QR code to pay
-                <strong id="upi-qr-amount-text">
-                  ₹0
-                </strong>
-              </p>
-
-            </div>
-
-            <p class="upi-id-label">
-              UPI ID:
-            </p>
-
-            <p class="upi-id">
-              ank86it@okicici
-            </p>
-
-            <a
-              id="upi-pay-button"
-              class="upi-pay-button"
-              href="#"
-            >
-              Open GPay / UPI App
-            </a>
-
-            <div class="form-group">
-
-              <label for="payment-reference">
-                UPI Transaction Reference Number
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="UPI" required checked>
+                <span class="payment-option-content">
+                  <strong>UPI Payment (Google Pay / PhonePe / Paytm)</strong>
+                  <small>Scan dynamic QR Code or tap app button with pre-filled cart amount.</small>
+                </span>
               </label>
 
-              <input
-                id="payment-reference"
-                name="paymentReference"
-                type="text"
-                placeholder="Enter transaction reference after payment"
-              >
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="Payment Link">
+                <span class="payment-option-content">
+                  <strong>Payment Link</strong>
+                  <small>Receive a secure payment link via SMS/Email after order review.</small>
+                </span>
+              </label>
 
-              <small class="payment-help-text">
-                You can find this number in your Google Pay payment history.
-              </small>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="Cash on Delivery">
+                <span class="payment-option-content">
+                  <strong>Cash on Delivery</strong>
+                  <small>Available in selected delivery locations upon store owner confirmation.</small>
+                </span>
+              </label>
 
             </div>
 
-          </div>
+            <!-- DYNAMIC UPI PAYMENT BOX -->
+            <div id="upi-payment-box" class="payment-instructions">
+              <h3>Pay with Google Pay / UPI</h3>
+              <p>Scan the QR code below using GPay, PhonePe, or Paytm. The total cart amount is pre-filled automatically!</p>
 
-          <!-- ONE PAYMENT LINK BOX ONLY -->
+              <div class="upi-payment-card">
+                <img 
+                  id="upi-qr-image" 
+                  class="upi-qr-image" 
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=250x220&data=upi%3A%2F%2Fpay%3Fpa%3Dank86it%40okicici%26pn%3DOrganic%2520Snacks%2520Store%26cu%3DINR" 
+                  alt="Dynamic UPI QR Code"
+                >
+                <p class="upi-scan-help">Scan this QR code to pay <strong id="upi-qr-amount-text" style="color:#114b35; font-size:1.2rem;">₹0</strong></p>
+              </div>
 
-          <div
-            id="payment-link-box"
-            class="payment-instructions"
-            hidden
-          >
+              <p class="upi-id-label">Or pay using UPI ID:</p>
+              <p class="upi-id">ank86it@okicici</p>
 
-            <h3>
-              Payment Link
-            </h3>
+              <a 
+                id="upi-pay-button" 
+                class="upi-pay-button" 
+                href="upi://pay?pa=ank86it@okicici&pn=Organic%20Snacks%20Store&cu=INR"
+              >
+                Open GPay / UPI App
+              </a>
 
-            <p>
-              A secure payment link will be sent after your order details
-              are reviewed.
-            </p>
+              <div class="form-group" style="margin-top: 15px;">
+                <label for="payment-reference">UPI Transaction Reference Number</label>
+                <input id="payment-reference" name="paymentReference" type="text" placeholder="Enter UPI Transaction ID / UTR (after paying)">
+                <small class="payment-help-text">You can find this transaction ID in your GPay / UPI app payment history.</small>
+              </div>
+            </div>
 
-          </div>
+            <!-- PAYMENT LINK BOX -->
+            <div id="payment-link-box" class="payment-instructions" hidden>
+              <h3>Payment Link</h3>
+              <p>After reviewing your order, a secure payment link will be generated and sent to your contact details.</p>
+            </div>
 
-          <!-- ONE COD BOX ONLY -->
+            <!-- COD BOX -->
+            <div id="cod-payment-box" class="payment-instructions" hidden>
+              <h3>Cash on Delivery</h3>
+              <p>Cash on Delivery requires verification by the store owner prior to dispatch.</p>
+            </div>
 
-          <div
-            id="cod-payment-box"
-            class="payment-instructions"
-            hidden
-          >
+          </section>
 
-            <h3>
-              Cash on Delivery
-            </h3>
-
-            <p>
-              Cash on Delivery requires store-owner confirmation and may be
-              available only in selected delivery areas.
-            </p>
-
-          </div>
-
-        </section>
-          <button
-            class="primary-button checkout-submit-button"
-            type="submit"
-          >
-            Review Payment and Order
+          <button class="primary-button checkout-submit-button" type="submit" style="margin-top:20px;">
+            Review Payment and Submit Order
           </button>
 
         </form>
-
       </section>
 
-
+      <!-- ORDER SUMMARY SIDEBAR -->
       <aside class="checkout-summary">
+        <h2>Order Summary</h2>
 
-        <h2>
-          Order Summary
-        </h2>
-
-        <div
-          id="checkout-items-container"
-          class="checkout-items-container"
-        >
+        <div id="checkout-items-container" class="checkout-items-container">
+          <!-- Populated by checkout.js -->
         </div>
 
         <div class="summary-row">
-          <span>
-            Total Items
-          </span>
-
-          <strong id="checkout-quantity">
-            0
-          </strong>
+          <span>Total Items</span>
+          <strong id="checkout-quantity">0</strong>
         </div>
 
         <div class="summary-row">
-          <span>
-            Subtotal
-          </span>
-
-          <strong id="checkout-subtotal">
-            ₹0
-          </strong>
+          <span>Subtotal</span>
+          <strong id="checkout-subtotal">₹0</strong>
         </div>
 
         <div class="summary-row">
-          <span>
-            Delivery
-          </span>
-
-          <strong>
-            Calculated later
-          </strong>
+          <span>Delivery</span>
+          <strong>Free / Included</strong>
         </div>
 
         <div class="summary-total">
-          <span>
-            Estimated Total
-          </span>
-
-          <strong id="checkout-total">
-            ₹0
-          </strong>
+          <span>Estimated Total</span>
+          <strong id="checkout-total">₹0</strong>
         </div>
 
         <p class="cart-note">
-          Payment and final order confirmation will be added in the next stage.
+          Orders are processed safely and recorded directly in our store system.
         </p>
-
       </aside>
 
     </div>
 
   </main>
 
-
+  <!-- ================= FOOTER ================= -->
   <footer class="site-footer">
-
     <div class="footer-content">
-
       <div class="footer-brand">
-        <h2>
-          🌿 Organic Snacks
-        </h2>
-
-        <p>
-          Simple snacks with clear information.
-        </p>
+        <h2>🌿 Organic Snacks</h2>
+        <p>Simple snacks with clear information.</p>
       </div>
 
       <div class="footer-links">
-        <h3>
-          Quick Links
-        </h3>
-
-        <a href="index.html#home">
-          Home
-        </a>
-
-        <a href="index.html#products">
-          Products
-        </a>
-
-        <a href="cart.html">
-          Cart
-        </a>
+        <h3>Quick Links</h3>
+        <a href="index.html#home">Home</a>
+        <a href="index.html#products">Products</a>
+        <a href="order-status.html">Track Order</a>
+        <a href="cart.html">Cart</a>
       </div>
-
     </div>
 
     <div class="footer-bottom">
-      <p>
-        © 2025 Organic Snacks Store. All rights reserved.
-      </p>
+      <p>© 2025 Organic Snacks Store. All rights reserved.</p>
     </div>
-
   </footer>
 
-
-  <script src="checkout.js?v=6"></script>
-
+  <script src="checkout.js?v=7"></script>
 </body>
+
 </html>
