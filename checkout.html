@@ -329,10 +329,68 @@
 
 
   <div
-    id="upi-payment-box"
-    class="payment-instructions"
-    hidden
+  id="upi-payment-box"
+  class="payment-instructions"
+  hidden
+>
+
+  <h3>
+    Pay with Google Pay / UPI
+  </h3>
+
+  <p>
+    Scan the QR code using Google Pay or another UPI application.
+    Enter the order amount shown in the order summary.
+  </p>
+
+  <div class="upi-payment-card">
+
+    <img
+      class="upi-qr-image"
+      src="images/payment/gpay-qr.png"
+      alt="Google Pay UPI QR code"
+    >
+
+    <p class="upi-scan-help">
+      Scan this QR code to pay
+    </p>
+
+  </div>
+
+  <p class="upi-id-label">
+    Or pay using UPI ID:
+  </p>
+
+  <p class="upi-id">
+    organicstore@okaxis
+  </p>
+
+  <a
+    class="upi-pay-button"
+    href="upi://pay?pa=organicstore@okaxis&pn=Organic%20Snacks%20Store&cu=INR"
   >
+    Open GPay / UPI App
+  </a>
+
+  <div class="form-group">
+    <label for="payment-reference">
+      UPI Transaction Reference Number
+    </label>
+
+    <input
+      id="payment-reference"
+      name="paymentReference"
+      type="text"
+      placeholder="Enter your UPI transaction ID"
+    >
+
+    <small class="payment-help-text">
+      You can find this reference number in your Google Pay payment history.
+    </small>
+  </div>
+
+</div>
+
 
     <h3>
       UPI Payment Instructions
