@@ -270,8 +270,15 @@ function validateCheckoutDetails(details) {
   if (details.phone.replace(/\D/g, "").length < 7) return "Please enter a valid phone number.";
   if (!details.address) return "Please enter your delivery address.";
   if (!details.paymentMethod) return "Please select a payment method.";
+
+  // Enforce UPI Transaction Reference for UPI payments
+  if (details.paymentMethod === "UPI" && !details.paymentReference) {
+    return "Please complete the UPI payment and enter your Transaction Reference Number / UTR.";
+  }
+
   return "";
 }
+
 
 function showOrderSuccess(result) {
   if (!checkoutForm) return;
